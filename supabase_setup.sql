@@ -27,7 +27,7 @@ create policy "solo logueados suben datos"
 
 drop policy if exists "solo logueados borran datos" on public.fotos;
 create policy "solo logueados borran datos"
-  on public.fotos for delete to authenticated using (true);
+  on public.fotos for delete to authenticated using (auth.uid() = subida_por);
 
 -- 2) Almacenamiento de las imágenes (público para verlas, máx. 5 MB, solo imágenes)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -47,4 +47,5 @@ create policy "solo logueados suben archivos"
 
 drop policy if exists "solo logueados borran archivos" on storage.objects;
 create policy "solo logueados borran archivos"
-  on storage.objects for delete to authenticated using (bucket_id = 'fotos');
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'fotos' and owner = auth.uid());

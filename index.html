@@ -18,6 +18,47 @@
 
         html { -webkit-text-size-adjust: 100%; }
         @media (max-width: 640px) { input, textarea, select { font-size: 16px !important; } }
+
+        /* ---------- SOBRE PARA GUARDAR LA CARTA ---------- */
+        .env { --ew: min(86vw, 380px); position: relative; width: var(--ew); aspect-ratio: 380 / 250;
+               margin-top: calc(var(--ew) * 0.42); perspective: 1100px; cursor: pointer;
+               filter: drop-shadow(0 16px 18px rgba(136, 19, 55, 0.28)); -webkit-tap-highlight-color: transparent; }
+        .env svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        .env-back  { position: absolute; inset: 0; z-index: 0; }
+        .env-front { position: absolute; inset: 0; z-index: 3; }
+        .env-flap { position: absolute; left: 0; top: 0; width: 100%; height: 55.2%; z-index: 5;
+                    transform-origin: 50% 0; transform-style: preserve-3d; transform: rotateX(0deg);
+                    transition: transform .85s cubic-bezier(.45, .05, .25, 1), z-index 0s linear .42s; }
+        .env.is-open .env-flap { transform: rotateX(180deg); z-index: 1; }
+        .flap-out, .flap-in { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .flap-in { transform: rotateX(180deg); }
+        .env-paper { position: absolute; left: 6%; right: 6%; top: 6%; height: 84%; z-index: 2;
+                     background: linear-gradient(180deg, #fffdfa, #fbf3e6); border-radius: 4px;
+                     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14); padding: calc(var(--ew) * .045) calc(var(--ew) * .06);
+                     transition: transform .95s cubic-bezier(.3, .7, .2, 1); }
+        .env.peek .env-paper { transform: translateY(-62%); }
+        .env-paper .hi { font-family: 'Great Vibes', cursive; color: #881337; font-size: calc(var(--ew) * .075); line-height: 1.1; }
+        .env-paper .pl { height: calc(var(--ew) * .011); background: rgba(136, 19, 55, .13); border-radius: 4px; margin-top: calc(var(--ew) * .028); }
+        .env-label { position: absolute; left: 0; right: 0; bottom: 7%; z-index: 4; text-align: center;
+                     font-family: 'Great Vibes', cursive; color: #881337; font-size: calc(var(--ew) * .092); line-height: 1; pointer-events: none; }
+        .env-seal { position: absolute; left: 50%; top: 55.2%; width: calc(var(--ew) * .17); height: calc(var(--ew) * .17); z-index: 6;
+                    transform: translate(-50%, -50%) scale(0); opacity: 0;
+                    transition: transform .55s cubic-bezier(.3, 1.6, .5, 1), opacity .25s ease; pointer-events: none; }
+        .env.sealed .env-seal { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .env-seal .wax { position: absolute; inset: 0; border-radius: 52% 48% 50% 50% / 50% 52% 48% 50%;
+                         background: radial-gradient(circle at 35% 30%, #d6264f 0%, #a50f36 45%, #6e0a26 100%);
+                         box-shadow: 0 3px 7px rgba(70, 8, 28, .45), inset 0 -3px 5px rgba(0, 0, 0, .3), inset 0 2px 3px rgba(255, 255, 255, .25); }
+        .env-seal .wax::after { content: ""; position: absolute; inset: 14%; border-radius: 50%; border: 1.5px solid rgba(255, 220, 228, .35); }
+        .env-seal svg { position: absolute; left: 50%; top: 50%; width: 46%; height: 46%; transform: translate(-50%, -50%);
+                        fill: #ffd9e1; filter: drop-shadow(0 1px 1px rgba(60, 5, 20, .55)); }
+        .letter-away { opacity: 0 !important; transform: translateY(70px) scale(.55) !important; }
+        .env-enter { animation: envEnter .6s ease-out both; }
+        .env-leave { animation: envLeave .35s ease-in both; }
+        @keyframes envEnter { from { opacity: 0; transform: translateY(24px) scale(.85); } to { opacity: 1; transform: none; } }
+        @keyframes envLeave { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px) scale(.95); } }
+        @keyframes envBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .env-idle .env { animation: envBob 3.2s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .env-idle .env { animation: none; } }
         .cat-btn { white-space: nowrap; flex-shrink: 0; }
         * { -webkit-tap-highlight-color: transparent; }
         button, [role="button"], a { touch-action: manipulation; }
@@ -186,9 +227,76 @@
 
             <div class="max-w-2xl mx-auto relative flex flex-col items-center">
                 <button id="toggleEnvelopeBtn" onclick="toggleEnvelope()" class="mb-6 px-6 py-2.5 bg-gradient-to-r from-jumbogreen to-emerald-600 hover:from-emerald-600 hover:to-jumbogreen text-white rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0">
-                    <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                    <span id="iconSaveLetter"><i data-lucide="mail" class="w-5 h-5"></i></span>
+                    <span id="iconOpenLetter" class="hidden"><i data-lucide="mail-open" class="w-5 h-5"></i></span>
                     <span id="envelopeBtnText">Guardar Carta</span>
                 </button>
+
+                <!-- SOBRE ROMÁNTICO: aquí queda guardada la carta -->
+                <div id="envelopeStage" class="hidden w-full flex flex-col items-center">
+                    <div id="env" class="env sealed" role="button" tabindex="0" aria-label="Abrir la carta"
+                         onclick="toggleEnvelope()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleEnvelope();}">
+                        <svg class="env-back" viewBox="0 0 380 250" aria-hidden="true">
+                            <defs>
+                                <pattern id="envLiner" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                                    <rect width="14" height="14" fill="#efa9bc"/>
+                                    <circle cx="7" cy="7" r="1.5" fill="#f8d4de" opacity=".7"/>
+                                </pattern>
+                            </defs>
+                            <rect width="380" height="250" rx="4" fill="url(#envLiner)"/>
+                        </svg>
+
+                        <div class="env-paper" aria-hidden="true">
+                            <div class="hi">Mi hermosa Catalina,</div>
+                            <div class="pl" style="width:92%"></div>
+                            <div class="pl" style="width:84%"></div>
+                            <div class="pl" style="width:90%"></div>
+                            <div class="pl" style="width:58%"></div>
+                        </div>
+
+                        <svg class="env-front" viewBox="0 0 380 250" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="envFront" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="#fde9ee"/>
+                                    <stop offset="1" stop-color="#f7c6d3"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M0 0 L190 138 L380 0 L380 246 Q380 250 376 250 L4 250 Q0 250 0 246 Z" fill="url(#envFront)" stroke="rgba(176,86,112,.45)" stroke-width="1.2" stroke-linejoin="round"/>
+                            <path d="M0 250 L190 138 L380 250" fill="none" stroke="rgba(176,86,112,.22)" stroke-width="1"/>
+                            <rect x="9" y="9" width="362" height="232" rx="3" fill="none" stroke="rgba(212,163,115,.35)" stroke-width="1" stroke-dasharray="3 4" style="display:none"/>
+                        </svg>
+
+                        <div class="env-label" aria-hidden="true">Para Catalina ♡</div>
+
+                        <div class="env-flap" aria-hidden="true">
+                            <div class="flap-out">
+                                <svg viewBox="0 0 380 138">
+                                    <defs>
+                                        <linearGradient id="envFlapOut" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0" stop-color="#fbd9e2"/>
+                                            <stop offset="1" stop-color="#f4b4c6"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M0 0 L190 138 L380 0 Z" fill="url(#envFlapOut)" stroke="rgba(176,86,112,.5)" stroke-width="1.2" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="flap-in">
+                                <svg viewBox="0 0 380 138">
+                                    <path d="M0 138 L190 0 L380 138 Z" fill="url(#envLiner)" stroke="rgba(176,86,112,.5)" stroke-width="1.2" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="env-seal" aria-hidden="true">
+                            <div class="wax"></div>
+                            <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </div>
+                    </div>
+                    <p id="envHint" class="mt-8 text-center font-serif italic text-burgundy opacity-0 transition-opacity duration-700">
+                        Tu carta quedó guardada ♡<br>
+                        <span class="text-xs not-italic text-gray-500 font-sans">Toca el sobre para abrirla</span>
+                    </p>
+                </div>
 
                 <!-- Carta Desplegada Elegante Estilo Vintage (Sin boleta) -->
                 <div id="letterPaperCard" class="w-full glass-card bg-creme border border-rose-200 rounded-3xl p-6 sm:p-10 shadow-2xl transition-all duration-700 relative overflow-hidden">
@@ -314,7 +422,7 @@
         <!-- INTERFAZ 4: IDEAS DE SALIDAS -->
         <section id="sec-salidas" class="tab-content hidden transition-all duration-500">
             <div class="text-center max-w-xl mx-auto mb-6">
-                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">20 ideas para hacer juntos</span>
+                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold" id="ideasHeaderLabel">20 ideas para hacer juntos</span>
                 <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">Nuestras Salidas</h2>
                 <p class="text-sm text-gray-600 mt-2">Toca cada tarjeta para descubrir una idea, o deja que el azar elija nuestra próxima salida.</p>
             </div>
@@ -350,7 +458,7 @@
             </div>
 
             <div class="flex items-center justify-between text-xs text-gray-500 mb-4 px-1">
-                <span>Descubiertas: <strong id="ideasRevealedCount" class="text-rosepink">0</strong> / 20</span>
+                <span>Descubiertas: <strong id="ideasRevealedCount" class="text-rosepink">0</strong> / <span id="ideasTotal">20</span></span>
                 <span class="italic">Toca una tarjeta ♡</span>
             </div>
 
@@ -1024,7 +1132,17 @@
             { id: 17, emoji: "🎨", cat: "Divertidas",      title: "Tarde creativa",             desc: "Pintar o hacer manualidades, y que cada uno dibuje al otro para reírnos del resultado." },
             { id: 18, emoji: "🕯️", cat: "Románticas",      title: "Cena del día 16",            desc: "Celebrar un mes más juntos con una cena rica. Una tradición para cada 16." },
             { id: 19, emoji: "💌", cat: "Románticas",      title: "Cita sorpresa",              desc: "Uno planea todo en secreto y el otro solo se deja llevar. Después nos turnamos." },
-            { id: 20, emoji: "🛋️", cat: "Tranqui",         title: "Maratón en casa con frazadas", desc: "Series o películas, frazadas, snacks y cero planes para mañana." }
+            { id: 20, emoji: "🛋️", cat: "Tranqui",         title: "Maratón en casa con frazadas", desc: "Series o películas, frazadas, snacks y cero planes para mañana." },
+            { id: 21, emoji: "🥕", cat: "Comida",          title: "Feria o mercado",            desc: "Recorrer una feria, probar cosas ricas y comprarle algo chiquito al otro de sorpresa." },
+            { id: 22, emoji: "🎁", cat: "Divertidas",      title: "Intercambio de regalitos",   desc: "Cada uno busca un regalo pequeño y misterioso con presupuesto mínimo, y nos los damos al final del paseo." },
+            { id: 23, emoji: "🎮", cat: "Divertidas",      title: "Torneo de videojuegos",      desc: "Un mini campeonato amistoso con un premio simbólico para quien gane." },
+            { id: 24, emoji: "🥞", cat: "Románticas",      title: "Desayuno largo",             desc: "Preparar algo rico y comerlo sin apuro, con música suave y la mañana por delante." },
+            { id: 25, emoji: "🌳", cat: "Aventura",        title: "Parque o sendero nuevo",     desc: "Elegir un lugar que no conozcamos y caminar sin destino fijo, parando donde nos guste." },
+            { id: 26, emoji: "🎭", cat: "Divertidas",      title: "Algo en vivo",               desc: "Una obra, una banda o un show de stand-up. Lo importante es vivirlo juntos." },
+            { id: 27, emoji: "⏳", cat: "Nuestra historia", title: "Cápsula del tiempo",        desc: "Escribirnos cartitas y guardar recuerdos pequeños (entradas, fotos) para abrirlos juntos dentro de un año." },
+            { id: 28, emoji: "🧩", cat: "Tranqui",         title: "Armar un puzzle",            desc: "Un puzzle, algo calentito para tomar y ninguna prisa por terminarlo." },
+            { id: 29, emoji: "🏕️", cat: "Aventura",        title: "Noche de camping",           desc: "Carpa, fogata, malvaviscos y estrellas. Dormir juntos al aire libre." },
+            { id: 30, emoji: "👩‍🍳", cat: "Comida",          title: "Cena de recetas de infancia", desc: "Cada uno cocina el plato que más le recuerda su infancia y se lo comparte al otro." }
         ];
 
         let revealedIdeas = new Set();
@@ -1033,9 +1151,12 @@
 
         function updateIdeasCount() {
             document.getElementById('ideasRevealedCount').innerText = revealedIdeas.size;
+            document.getElementById('ideasTotal').innerText = ideasData.length;
+            document.getElementById('ideasHeaderLabel').innerText = ideasData.length + ' ideas para hacer juntos';
         }
 
         function renderIdeas(popId = null) {
+            updateIdeasCount();
             const grid = document.getElementById('ideasGrid');
             grid.innerHTML = '';
 
@@ -1159,24 +1280,92 @@
             }
         }
 
-        // --- 6. CARTA DESPLEGABLE ---
-        let isLetterOpen = true;
-        function toggleEnvelope() {
-            const letter = document.getElementById('letterPaperCard');
-            const btnText = document.getElementById('envelopeBtnText');
+        // --- 6. CARTA: SE GUARDA EN UN SOBRE ROMÁNTICO ---
+        let letterState = 'open';   // 'open' = carta a la vista, 'closed' = guardada en el sobre, 'busy' = animando
+        const wait = (ms) => new Promise(r => setTimeout(r, ms));
+        const REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-            if (isLetterOpen) {
-                letter.style.opacity = '0.3';
-                letter.style.transform = 'scale(0.96)';
-                btnText.innerText = 'Desplegar Carta';
-                isLetterOpen = false;
-            } else {
-                letter.style.opacity = '1';
-                letter.style.transform = 'scale(1)';
-                btnText.innerText = 'Guardar Carta';
-                isLetterOpen = true;
-                triggerConfetti();
-            }
+        function setEnvelopeButton(label, isSaved, disabled) {
+            document.getElementById('envelopeBtnText').innerText = label;
+            document.getElementById('iconSaveLetter').classList.toggle('hidden', isSaved);
+            document.getElementById('iconOpenLetter').classList.toggle('hidden', !isSaved);
+            const btn = document.getElementById('toggleEnvelopeBtn');
+            btn.disabled = !!disabled;
+            btn.classList.toggle('opacity-70', !!disabled);
+        }
+
+        async function saveLetterInEnvelope() {
+            const card = document.getElementById('letterPaperCard');
+            const stage = document.getElementById('envelopeStage');
+            const env = document.getElementById('env');
+            const hint = document.getElementById('envHint');
+            const slow = REDUCED_MOTION ? 0 : 1;
+
+            letterState = 'busy';
+            setEnvelopeButton('Guardando…', false, true);
+            hint.classList.add('opacity-0');
+            stage.classList.remove('env-idle');
+
+            card.classList.add('letter-away');          // la carta se dobla y se va achicando
+            await wait(650 * slow);
+            card.classList.add('hidden');
+
+            env.className = 'env is-open peek';         // aparece el sobre abierto, con la carta asomando
+            stage.classList.remove('hidden', 'env-leave');
+            stage.classList.add('env-enter');
+            stage.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'center' });
+
+            await wait(900 * slow);
+            env.classList.remove('peek');               // la carta se desliza adentro
+            await wait(1000 * slow);
+            env.classList.remove('is-open');            // se cierra la solapa
+            await wait(850 * slow);
+            env.classList.add('sealed');                // sello de cera con corazón
+            await wait(700 * slow);
+
+            hint.classList.remove('opacity-0');
+            stage.classList.add('env-idle');
+            setEnvelopeButton('Abrir carta', true, false);
+            letterState = 'closed';
+        }
+
+        async function openLetterFromEnvelope() {
+            const card = document.getElementById('letterPaperCard');
+            const stage = document.getElementById('envelopeStage');
+            const env = document.getElementById('env');
+            const slow = REDUCED_MOTION ? 0 : 1;
+
+            letterState = 'busy';
+            setEnvelopeButton('Abriendo…', true, true);
+            document.getElementById('envHint').classList.add('opacity-0');
+            stage.classList.remove('env-idle');
+
+            env.classList.remove('sealed');             // se rompe el sello
+            await wait(350 * slow);
+            env.classList.add('is-open');               // se abre la solapa
+            await wait(850 * slow);
+            env.classList.add('peek');                  // la carta sale del sobre
+            await wait(900 * slow);
+
+            stage.classList.add('env-leave');
+            await wait(350 * slow);
+            stage.classList.add('hidden');
+            stage.classList.remove('env-enter', 'env-leave');
+
+            card.classList.remove('hidden');
+            void card.offsetWidth;                      // reinicia la transición
+            card.classList.remove('letter-away');       // la carta se despliega de nuevo
+            document.getElementById('toggleEnvelopeBtn').scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'center' });
+
+            setEnvelopeButton('Guardar Carta', false, false);
+            letterState = 'open';
+            triggerConfetti();
+        }
+
+        function toggleEnvelope() {
+            if (letterState === 'busy') return;
+            if (letterState === 'open') saveLetterInEnvelope();
+            else openLetterFromEnvelope();
         }
 
         // --- 7. ISLA DE MÚSICA: NUESTRA CANCIÓN ---

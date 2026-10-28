@@ -48,7 +48,7 @@ Nació como un gesto romántico, pero está construida con tecnologías y práct
 
 ## 📌 Demo en vivo
 
-**https://arrobaaas.github.io/nueva-historia/**
+**https://arrobaaas.github.io/nuestra-historia/**
 
 ## 👤 Autor
 

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#fdf2f4">
+    <meta name="description" content="Un sitio especial para Catalina">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <title>Nicolás & Catalina ♡ Nuestra Historia</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+
+        html { -webkit-text-size-adjust: 100%; }
+        .cat-btn { white-space: nowrap; flex-shrink: 0; }
+        * { -webkit-tap-highlight-color: transparent; }
+        button, [role="button"], a { touch-action: manipulation; }
+        body { min-height: 100vh; min-height: 100dvh; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        .animate-heartbeat { animation: heartBeat 1.8s ease-in-out infinite; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fdf2f4; }
+        ::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #db2777; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+
+        /* ---------- ISLA DE MÚSICA ---------- */
+        .music-island {
+            position: fixed; z-index: 60;
+            touch-action: none; user-select: none; -webkit-user-select: none;
+            cursor: grab;
+            display: flex; align-items: center; gap: .6rem;
+            min-width: 11.5rem;
+            padding: .5rem .95rem .5rem .5rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.4);
+            color: #881337;
+            box-shadow: 0 10px 25px -8px rgba(136, 19, 55, 0.35);
+            transition: background .4s, color .4s, border-color .4s, box-shadow .4s, transform .2s;
+        }
+        .music-island:focus-visible { outline: 2px solid #f472b6; outline-offset: 3px; }
+        .music-island.dragging { cursor: grabbing; transform: scale(1.06); box-shadow: 0 18px 35px -10px rgba(136, 19, 55, 0.45); }
+        .music-island.playing {
+            background: #059669; color: #fff; border-color: #047857;
+            box-shadow: 0 10px 28px -8px rgba(5, 150, 105, 0.65);
+        }
+        .music-island .island-icon {
+            width: 2.1rem; height: 2.1rem; border-radius: 9999px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #ffe4ec; color: #f472b6; transition: background .4s, color .4s;
+        }
+        .music-island.playing .island-icon { background: rgba(255,255,255,.22); color: #fff; }
+        .music-island .island-icon svg { width: 1rem; height: 1rem; }
+        .music-island .eq { display: none; align-items: flex-end; gap: 2px; height: 14px; margin-left: auto; }
+        .music-island.playing .eq { display: flex; }
+        .music-island .eq span { width: 3px; height: 30%; background: currentColor; border-radius: 2px; animation: eqBar .9s ease-in-out infinite; }
+        .music-island .eq span:nth-child(2) { animation-delay: .2s; }
+        .music-island .eq span:nth-child(3) { animation-delay: .4s; }
+        @keyframes eqBar { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+        .music-island .island-dot { margin-left: auto; width: .5rem; height: .5rem; border-radius: 9999px; background: #f472b6; animation: ideaPing 1.6s cubic-bezier(0,0,.2,1) infinite; }
+        .music-island.playing .island-dot { display: none; }
+        @keyframes ideaPing { 0% { box-shadow: 0 0 0 0 rgba(244,114,182,.6); } 80%, 100% { box-shadow: 0 0 0 8px rgba(244,114,182,0); } }
+
+        /* ---------- TARJETAS DE SALIDAS ---------- */
+        @keyframes ideaPop { 0% { transform: scale(.9) rotate(-1.5deg); opacity: .4; } 60% { transform: scale(1.04); } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+        .idea-pop { animation: ideaPop .45s ease-out; }
+        @keyframes featIn { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+        .feat-in { animation: featIn .35s ease-out; }
+        @keyframes diceShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg) scale(1.1); } 75% { transform: rotate(12deg) scale(1.1); } }
+        .dice-shake { animation: diceShake .18s linear infinite; }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rosesoft via-champagne to-creme text-gray-800 font-sans min-h-screen relative flex flex-col selection:bg-rosepink selection:text-white">
+
+    <!-- Canvas para Partículas de Corazones -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ISLA DE MÚSICA: NUESTRA CANCIÓN (arrastrable, suena mientras navegas) -->
+    <div id="musicIsland" class="music-island" role="button" tabindex="0" aria-pressed="false" aria-label="Reproducir o pausar nuestra canción">
+        <span class="island-icon">
+            <span id="iconPlay"><i data-lucide="play"></i></span>
+            <span id="iconPause" class="hidden"><i data-lucide="pause"></i></span>
+        </span>
+        <span class="flex flex-col leading-tight">
+            <span class="text-xs font-bold">Nuestra canción ♡</span>
+            <span id="islandSub" class="text-[10px] opacity-75">Toca para escuchar</span>
+        </span>
+        <span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="island-dot" aria-hidden="true"></span>
+    </div>
+    <audio id="songAudio" src="cancion.mp3" loop preload="none" playsinline></audio>
+
+    <!-- ENCABEZADO / NAVBAR -->
+    <header class="sticky top-0 z-40 glass-card border-b border-rose-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-2 sm:py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-jumbogreen to-rosepink flex items-center justify-center text-white shadow-md relative">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current animate-heartbeat"></i>
+                </div>
+                <div>
+                    <h1 class="font-script text-2xl sm:text-3xl text-burgundy font-bold leading-none">Nicolás & Catalina</h1>
+                    <p class="text-[10px] sm:text-xs text-emerald-700 font-semibold tracking-wide flex items-center gap-1 mt-0.5">
+                        <span>Desde que nos conocimos en el Jumbo</span> ♡
+                    </p>
+                </div>
+            </div>
+
+            <!-- NAVEGACIÓN PRINCIPAL -->
+            <nav class="flex items-center bg-rose-100/60 p-1.5 rounded-full border border-rose-200/60 w-full sm:w-auto overflow-x-auto justify-between sm:justify-center">
+                <button onclick="switchTab('carta')" id="tab-carta" class="nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap active-tab">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <span>Carta</span>
+                </button>
+                <button onclick="switchTab('razones')" id="tab-razones" class="nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>100 Razones</span>
+                </button>
+                <button onclick="switchTab('galeria')" id="tab-galeria" class="nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap">
+                    <i data-lucide="camera" class="w-4 h-4"></i>
+                    <span>Fotos</span>
+                </button>
+                <button onclick="switchTab('salidas')" id="tab-salidas" class="nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                    <span>Salidas</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- BARRA DE CONTADOR DE TIEMPO POLOLEAR (DESDE EL 16 DE AGOSTO DE 2026) -->
+    <div class="bg-gradient-to-r from-rose-100 via-emerald-50 to-rose-100 border-b border-rose-200/50 py-2.5 px-4 text-center z-10 shadow-inner">
+        <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs sm:text-sm text-burgundy font-medium">
+            <span class="flex items-center gap-1 text-jumbogreen font-semibold">
+                <i data-lucide="calendar-heart" class="w-4 h-4"></i>
+                <span>Pololeando desde el 16 de Agosto de 2026:</span>
+            </span>
+            <div id="loveCounter" class="font-bold tracking-tight text-gray-800 flex items-center gap-2 sm:gap-3">
+                <!-- Se calcula dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-8 relative z-10">
+
+        <!-- INTERFAZ 1: CARTA DE AMOR PARA CATALINA -->
+        <section id="sec-carta" class="tab-content transition-all duration-500">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">Un mensaje desde el corazón</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">Para mi amada Catalina</h2>
+                <div class="w-16 h-0.5 bg-rosepink mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="max-w-2xl mx-auto relative flex flex-col items-center">
+                <button id="toggleEnvelopeBtn" onclick="toggleEnvelope()" class="mb-6 px-6 py-2.5 bg-gradient-to-r from-jumbogreen to-emerald-600 hover:from-emerald-600 hover:to-jumbogreen text-white rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0">
+                    <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                    <span id="envelopeBtnText">Guardar Carta</span>
+                </button>
+
+                <!-- Carta Desplegada Elegante Estilo Vintage (Sin boleta) -->
+                <div id="letterPaperCard" class="w-full glass-card bg-creme border border-rose-200 rounded-3xl p-6 sm:p-10 shadow-2xl transition-all duration-700 relative overflow-hidden">
+                    
+                    <div class="flex justify-between items-start border-b border-rose-200/60 pb-5 mb-6">
+                        <div>
+                            <p class="font-script text-3xl sm:text-4xl text-burgundy">Mi hermosa Catalina,</p>
+                            <p class="text-xs text-emerald-700 font-semibold mt-1">Del amor de tu vida para la niña con ojitos de papel</p>
+                        </div>
+                        <span class="text-xs text-rosepink font-serif italic bg-rose-50 px-2.5 sm:px-3.5 py-1.5 rounded-full border border-rose-200 shadow-xs font-semibold">16 de Agosto ♡</span>
+                    </div>
+
+                    <!-- Texto de la carta -->
+                    <div class="space-y-4 font-serif text-gray-700 text-base sm:text-lg leading-relaxed italic text-left">
+                        <p>
+                            Todavía recuerdo cuando trabajaba como Asistente de Servicio en el Jumbo. Entre el movimiento de cada día, los clientes y la rutina, jamás imaginé que me iba a cruzar con la mujer más linda e increíble de todas.
+                        </p>
+                        <p>
+                            Verte en tu caja, trabajando con tanta dedicación, con tu amabilidad y esa sonrisa que lo ilumina todo, hacía que cualquier turno valiera la pena. Me bastaba con cruzar una mirada contigo, aunque fuera a lo lejos, para que mi día entero cambiara.
+                        </p>
+                        <p>
+                            El <strong class="text-burgundy">16 de agosto</strong> es una fecha que guardo como un tesoro: el día en que dijiste que sí y empezamos a pololear. Llevamos poco más de dos meses, y aun así siento que me has regalado más ternura de la que sabía que cabía en un día.
+                        </p>
+                        <p>
+                            Contigo encontré una paz que ni sabía que me faltaba. Tus abrazos apretados, tu mano en la mía cuando caminamos, tus ojitos que se achican cuando te ríes de verdad… todo eso se volvió lo que más quiero de mis días. A tu lado el estrés se me olvida.
+                        </p>
+                        <p>
+                            Yo estudio Ingeniería Civil Informática y me paso el día entre lógica y código, pero para quererte no necesito ninguna fórmula: lo sé con el corazón. Gracias por escucharme cuando te hablo de mis ramos, por tu paciencia cuando ando metido en la universidad, y por hacerme tan feliz.
+                        </p>
+                        <p>
+                            Ojalá sigamos sumando salidas, recuerdos y cada 16 de mes juntos. Eres mi persona favorita, mi refugio y lo mejor que me ha pasado este año. Gracias por elegirme, Catalina. Te amo con todo mi corazón.
+                        </p>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-rose-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs text-gray-400 uppercase tracking-widest font-sans font-semibold">Con todo mi amor infinito,</p>
+                            <p class="font-handwriting text-3xl text-burgundy mt-1">Nicolás ♡</p>
+                        </div>
+                        <button onclick="triggerConfetti()" class="text-xs bg-rose-50 text-rosepink hover:bg-rose-100 px-4 py-2.5 rounded-full border border-rose-200 transition-colors flex items-center gap-2 font-bold shadow-xs">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-rosepink"></i>
+                            <span>Te amo, Catalina</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERFAZ 2: 100 RAZONES POR LAS QUE TE AMO -->
+        <section id="sec-razones" class="tab-content hidden transition-all duration-500">
+            <div class="text-center max-w-2xl mx-auto mb-6">
+                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">100 Motivos para amarte cada día más</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">100 Razones para Amarte</h2>
+                <p class="text-sm text-gray-600 mt-2">Toca cada tarjeta para descubrir las razones por las que me enamoré de ti, Catalina.</p>
+            </div>
+
+            <!-- CONTROLES -->
+            <div class="glass-card p-4 rounded-2xl mb-6 shadow-sm border border-rose-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="relative w-full md:w-72">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="reasonSearch" oninput="filterReasons()" placeholder="Buscar razón…" class="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-white border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                </div>
+
+                <div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 text-xs">
+                    <button onclick="setCategoryFilter('all')" class="cat-btn px-3 py-1.5 rounded-full bg-rosepink text-white font-medium transition-all" data-cat="all">Todas (100)</button>
+                    <button onclick="setCategoryFilter('jumbo')" class="cat-btn px-3 py-1.5 rounded-full bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 transition-all" data-cat="jumbo">Jumbo & Inicio</button>
+                    <button onclick="setCategoryFilter('detalles')" class="cat-btn px-3 py-1.5 rounded-full bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 transition-all" data-cat="detalles">Tus Detalles</button>
+                    <button onclick="setCategoryFilter('futuro')" class="cat-btn px-3 py-1.5 rounded-full bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 transition-all" data-cat="futuro">Nuestro Futuro</button>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-center md:justify-end">
+                    <button onclick="revealAllReasons()" class="px-3 py-2 bg-emerald-100 text-jumbogreen hover:bg-emerald-200 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1">
+                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> Revelar todas
+                    </button>
+                    <button onclick="hideAllReasons()" class="px-3 py-2 bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1">
+                        <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> Ocultar todas
+                    </button>
+                    <button onclick="showRandomReason()" class="px-3 py-2 bg-burgundy text-white hover:bg-rose-900 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1 shadow-sm">
+                        <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Aleatoria
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4 px-1">
+                <span>Descubiertas: <strong id="revealedCount" class="text-rosepink">0</strong> / 100</span>
+                <span id="categoryLabelInfo" class="italic">Mostrando todas</span>
+            </div>
+
+            <div id="reasonsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                <!-- Se llena dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- INTERFAZ 3: FOTOS DE NOSOTROS (SUBIDA DIRECTA DESDE EL CELULAR / GUARDADO EN BROWSER) -->
+        <section id="sec-galeria" class="tab-content hidden transition-all duration-500">
+            <div class="text-center max-w-xl mx-auto mb-6">
+                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">Nuestros Recuerdos Favoritos</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">Galería de Fotos</h2>
+                <p class="text-sm text-gray-600 mt-2">Puedes subir las fotos que quieras directamente desde tu celular o computador.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6">
+                <p class="text-xs text-gray-500 italic">
+                    📸 Sube tus fotos favoritas en formato PNG o JPG. Se guardarán en tu dispositivo automáticamente.
+                </p>
+                <button onclick="openAddPhotoModal()" class="glass-card hover:bg-white text-burgundy px-4 py-2.5 rounded-full text-xs font-bold shadow-md border border-rose-200 flex items-center justify-center gap-2 transition-all hover:scale-105 shrink-0">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-rosepink"></i>
+                    <span>Subir Foto Nueva</span>
+                </button>
+            </div>
+
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Fotos cargadas dinámicamente -->
+            </div>
+        </section>
+
+        <!-- INTERFAZ 4: IDEAS DE SALIDAS -->
+        <section id="sec-salidas" class="tab-content hidden transition-all duration-500">
+            <div class="text-center max-w-xl mx-auto mb-6">
+                <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">20 ideas para hacer juntos</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">Nuestras Salidas</h2>
+                <p class="text-sm text-gray-600 mt-2">Toca cada tarjeta para descubrir una idea, o deja que el azar elija nuestra próxima salida.</p>
+            </div>
+
+            <!-- CONTROLES -->
+            <div class="glass-card p-4 rounded-2xl mb-4 shadow-sm border border-rose-100 flex flex-wrap items-center justify-center gap-3">
+                <button id="rollIdeaBtn" onclick="rollIdea()" class="px-4 py-2.5 bg-burgundy text-white hover:bg-rose-900 rounded-xl text-xs sm:text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm">
+                    <i data-lucide="dices" class="w-4 h-4"></i> Sorpréndeme
+                </button>
+                <button onclick="revealAllIdeas()" class="px-3.5 py-2.5 bg-emerald-100 text-jumbogreen hover:bg-emerald-200 rounded-xl text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5">
+                    <i data-lucide="eye" class="w-4 h-4"></i> Revelar todas
+                </button>
+                <button onclick="hideAllIdeas()" class="px-3.5 py-2.5 bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 rounded-xl text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5">
+                    <i data-lucide="eye-off" class="w-4 h-4"></i> Ocultar todas
+                </button>
+            </div>
+
+            <!-- TARJETA ELEGIDA AL AZAR -->
+            <div id="ideaFeatured" class="hidden max-w-xl mx-auto mb-6">
+                <div class="glass-card bg-white rounded-3xl p-6 sm:p-8 text-center border-2 border-rosepink/40 shadow-xl relative">
+                    <button onclick="closeFeatured()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" aria-label="Cerrar">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                    <p class="text-[11px] uppercase tracking-widest text-jumbogreen font-bold">Nuestra próxima salida podría ser…</p>
+                    <div id="featEmoji" class="text-6xl my-3">🎲</div>
+                    <h3 id="featTitle" class="font-serif text-2xl font-bold text-burgundy"></h3>
+                    <span id="featCat" class="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider text-jumbogreen bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100"></span>
+                    <p id="featDesc" class="text-sm sm:text-base text-gray-600 mt-3 leading-relaxed"></p>
+                    <button onclick="rollIdea()" class="mt-5 px-4 py-2 bg-rose-50 text-rosepink hover:bg-rose-100 border border-rose-200 rounded-full text-xs font-bold transition-colors inline-flex items-center gap-2">
+                        <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Otra al azar
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4 px-1">
+                <span>Descubiertas: <strong id="ideasRevealedCount" class="text-rosepink">0</strong> / 20</span>
+                <span class="italic">Toca una tarjeta ♡</span>
+            </div>
+
+            <div id="ideasGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                <!-- Se llena dinámicamente con JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-rose-100/80 bg-creme/80 backdrop-blur-sm py-6 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 text-center flex flex-col items-center">
+            <p class="font-script text-3xl text-burgundy">Nicolás & Catalina</p>
+            <p class="text-xs text-gray-500 mt-1">Pololeando desde el 16 de Agosto de 2026 | Hecho con todo mi amor ♡</p>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX PARA AMPLIAR FOTOS -->
+    <div id="photoLightbox" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="relative max-w-3xl w-full max-h-[92vh] bg-white rounded-2xl overflow-y-auto shadow-2xl flex flex-col md:flex-row">
+            <button onclick="closeLightbox()" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-full md:w-2/3 bg-black flex items-center justify-center p-2 min-h-[280px]">
+                <img id="lightboxImg" src="" alt="Foto Catalina" class="max-h-[45vh] md:max-h-[75vh] w-auto max-w-full object-contain rounded-lg">
+            </div>
+            <div class="w-full md:w-1/3 p-6 flex flex-col justify-between bg-white">
+                <div>
+                    <span id="lightboxTag" class="text-[10px] uppercase font-bold tracking-widest text-jumbogreen bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 inline-block mb-3">Recuerdo Nuestro</span>
+                    <h3 id="lightboxTitle" class="font-serif text-xl font-bold text-gray-800"></h3>
+                    <p id="lightboxDate" class="text-xs text-rosepink font-semibold mt-1 flex items-center gap-1">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i> <span></span>
+                    </p>
+                    <p id="lightboxDesc" class="text-sm text-gray-600 mt-4 leading-relaxed font-sans"></p>
+                </div>
+                <div class="pt-4 border-t border-gray-100 mt-6 flex justify-between items-center text-xs text-gray-400">
+                    <span>❤️ Nicolás & Catalina</span>
+                    <button onclick="closeLightbox()" class="text-rosepink font-semibold hover:underline">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA SUBIR FOTO REAL (DESDE CELULAR O ARCHIVO LOCAL) -->
+    <div id="addPhotoModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl relative border border-rose-100">
+            <button onclick="closeAddPhotoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="font-serif text-xl font-bold text-burgundy mb-1">Subir Foto Especial</h3>
+            <p class="text-xs text-gray-500 mb-4">Selecciona una imagen en formato PNG o JPG desde tu celular o equipo.</p>
+            <form onsubmit="saveNewPhoto(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Título de la Foto</label>
+                    <input type="text" id="photoTitleInput" required placeholder="Ej. Nuestro paseo juntos" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Fecha de la Foto</label>
+                    <input type="text" id="photoDateInput" required placeholder="Ej. 16 de Agosto" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Seleccionar Imagen (PNG, JPG, JPEG)</label>
+                    <input type="file" id="photoFileInput" accept="image/*" required class="w-full px-2 py-1.5 border border-rose-200 rounded-xl text-xs bg-rose-50/50 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rosepink file:text-white hover:file:bg-rose-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Descripción / Recuerdo</label>
+                    <textarea id="photoDescInput" rows="3" required placeholder="¿Qué hizo especial este momento?" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddPhotoModal()" class="px-4 py-2 text-xs text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 text-xs bg-rosepink hover:bg-rose-500 text-white font-semibold rounded-xl shadow-sm">Guardar Foto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LÓGICO -->
+    <script>
+        // --- 1. CONTADOR DESDE EL 16 DE AGOSTO DE 2026 (LLEVAN RECIÉN 2 MESES) ---
+        const startDate = new Date(2026, 7, 16, 0, 0, 0); // Agosto es mes 7 en JS
+
+        function updateCounter() {
+            const now = new Date();
+            let diffMs = now - startDate;
+            
+            if (diffMs < 0) diffMs = 0; // Guardrail si la fecha del sistema es previa
+
+            const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const months = Math.floor(totalDays / 30.4375);
+            const days = Math.floor(totalDays % 30.4375);
+            const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+            const seconds = Math.floor((diffMs / 1000) % 60);
+
+            const counterEl = document.getElementById('loveCounter');
+            if (counterEl) {
+                counterEl.innerHTML = `
+                    <span class="bg-white px-2.5 py-0.5 rounded border border-rose-200 shadow-xs text-burgundy font-bold">${months} meses</span>
+                    <span class="bg-white px-2.5 py-0.5 rounded border border-rose-200 shadow-xs text-jumbogreen font-bold">${days} días</span>
+                    <span class="bg-white px-2 py-0.5 rounded border border-rose-200 shadow-xs text-gray-700 font-bold">${hours}h</span> :
+                    <span class="bg-white px-2 py-0.5 rounded border border-rose-200 shadow-xs font-bold">${minutes}m</span> :
+                    <span class="bg-white px-2 py-0.5 rounded border border-rose-200 shadow-xs text-rosepink font-bold">${seconds}s</span>
+                `;
+            }
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // --- 2. 100 RAZONES PARA CATALINA ---
+        const reasonsData = [
+            { id: 1, text: "Por cómo me sonreías cuando te veía trabajar en las cajas del Jumbo.", cat: "jumbo" },
+            { id: 2, text: "Porque hacer el turno de Asistente de Servicio valía la pena solo para cruzarme contigo.", cat: "jumbo" },
+            { id: 3, text: "El 16 de agosto de 2026 cuando dijiste que sí y empezamos este lindo pololeo.", cat: "jumbo" },
+            { id: 4, text: "Tu amabilidad infinita con todas las personas que atiendes.", cat: "detalles" },
+            { id: 5, text: "Tus 20 años llenos de madurez, ternura y alegría de vivir.", cat: "detalles" },
+            { id: 6, text: "Cómo me escuchas hablar sobre mis ramos de ingeniería informática aunque sea súper técnico.", cat: "detalles" },
+            { id: 7, text: "Tu risa hermosa que ilumina todo a mi alrededor, Catalina.", cat: "detalles" },
+            { id: 8, text: "Por nuestras salidas a comer algo rico tras cumplir nuestras responsabilidades.", cat: "momentos" },
+            { id: 9, text: "Lo bella que te ves siempre, arreglada o desordenada.", cat: "detalles" },
+            { id: 10, text: "La forma en que me tomas la mano bien firme en la calle.", cat: "detalles" },
+            { id: 11, text: "Por ser la cajera más dulce, dedicada y hermosa del mundo.", cat: "jumbo" },
+            { id: 12, text: "Por cada mirada cómplice que nos dábamos en el trabajo.", cat: "jumbo" },
+            { id: 13, text: "Porque contigo no necesito programar nada para saber que eres la correcta.", cat: "detalles" },
+            { id: 14, text: "Tus abrazos apretados que me devuelven la paz al instante.", cat: "detalles" },
+            { id: 15, text: "La ternura con la que pronuncias mi nombre: Nico.", cat: "detalles" },
+            { id: 16, text: "Porque apoyas cada uno de mis proyectos universatarios y profesionales.", cat: "futuro" },
+            { id: 17, text: "Tu aroma dulce que se queda marcado en mi ropa.", cat: "detalles" },
+            { id: 18, text: "Nuestros chistes compartidos sobre lo que pasa en el supermercado.", cat: "jumbo" },
+            { id: 19, text: "Cuando nos quedamos conversando sin ver la hora pasar.", cat: "momentos" },
+            { id: 20, text: "Porque contigo me imagino un futuro hermoso lleno de metas cumplidas.", cat: "futuro" },
+            { id: 21, text: "Tus besos suaves que me alegran cualquier día.", cat: "detalles" },
+            { id: 22, text: "Tu humildad y el gran corazón que tienes con todos.", cat: "detalles" },
+            { id: 23, text: "Por cómo cuidas a las personas que quieres.", cat: "detalles" },
+            { id: 24, text: "Nuestras fotos juntos en estos 2 meses que guardo como mi gran tesoro.", cat: "momentos" },
+            { id: 25, text: "Porque salir juntos a pasear es mi momento preferido de la semana.", cat: "momentos" },
+            { id: 26, text: "La paz que me da recostarme a tu lado.", cat: "detalles" },
+            { id: 27, text: "Porque eres mi polola, mi confidente y mi compañera soñada.", cat: "detalles" },
+            { id: 28, text: "Nuestra primera cita fuera del turno de trabajo.", cat: "jumbo" },
+            { id: 29, text: "Tu cara de emoción cuando probamos algo rico.", cat: "detalles" },
+            { id: 30, text: "Porque eres la luz de mis 21 años.", cat: "detalles" },
+            { id: 31, text: "Cómo se achican tus ojitos cuando te ríes de verdad.", cat: "detalles" },
+            { id: 32, text: "Por cada mensaje cariñoso que me envías al teléfono.", cat: "momentos" },
+            { id: 33, text: "Por enseñarme lo lindo que es pololear sanamente.", cat: "detalles" },
+            { id: 34, text: "Tu paciencia de oro cuando ando concentrado en la universidad.", cat: "detalles" },
+            { id: 35, text: "Todas las salidas y viajes que tenemos anotados para el futuro.", cat: "futuro" },
+            { id: 36, text: "La forma tan tierna en que caminas tomada de mi brazo.", cat: "detalles" },
+            { id: 37, text: "Por haber coincidido en el mismo trabajo e iniciar esto.", cat: "jumbo" },
+            { id: 38, text: "Tus ojos brillantes cuando me miras fija e intensamente.", cat: "detalles" },
+            { id: 39, text: "Porque jamás me cansaré de llenarte la carita de besos.", cat: "detalles" },
+            { id: 40, text: "El orgullo gigante que siento cuando te presento como Catalina, mi polola.", cat: "detalles" },
+            { id: 41, text: "Por cómo cantas nuestras canciones favoritas como Embarrassed de BTS.", cat: "detalles" },
+            { id: 42, text: "Nuestras llamadas cortas o largas para saber del otro.", cat: "momentos" },
+            { id: 43, text: "Por cada 16 de mes que vamos a celebrar juntos.", cat: "futuro" },
+            { id: 44, text: "Tu lado tierno y cariñoso que me llena la vida de color.", cat: "detalles" },
+            { id: 45, text: "Porque a tu lado el estrés del día a día desaparece.", cat: "detalles" },
+            { id: 46, text: "Tus gestos sutiles cuando quieres un abrazo tuyo.", cat: "detalles" },
+            { id: 47, text: "Por cómo festejamos estos primeros 2 meses de puro amor.", cat: "jumbo" },
+            { id: 48, text: "Tus ganas constantes de crecer y salir adelante.", cat: "detalles" },
+            { id: 49, text: "Porque eres única, madura, bella y totalmente irremplazable.", cat: "detalles" },
+            { id: 50, text: "Porque en mi vida tú eres la mejor decisión de todas.", cat: "futuro" },
+            { id: 51, text: "Por cada snack o juguito compartido en nuestros descansos.", cat: "jumbo" },
+            { id: 52, text: "Por la serenidad inmediata que me transmites.", cat: "detalles" },
+            { id: 53, text: "Tu voz dulce saludándome apenas nos vemos.", cat: "detalles" },
+            { id: 54, text: "Porque eres mi lugar de refugio y tranquilidad.", cat: "detalles" },
+            { id: 55, text: "Nuestras caminatas tranquilas conversando de todo un poco.", cat: "momentos" },
+            { id: 56, text: "La alegría y chispa que le pones a nuestro pololeo.", cat: "detalles" },
+            { id: 57, text: "Tu preocupación genuina por mi bienestar siempre.", cat: "detalles" },
+            { id: 58, text: "Porque nuestro amor no tiene precio ni comparación alguna.", cat: "jumbo" },
+            { id: 59, text: "La mezcla perfecta entre tu hermosura por fuera y por dentro.", cat: "detalles" },
+            { id: 60, text: "Por los helados y postres que comemos en nuestras citas.", cat: "momentos" },
+            { id: 61, text: "Porque desde el 16 de agosto todo en mi vida mejoró.", cat: "momentos" },
+            { id: 62, text: "Tus expresiones lindas cuando te hago un cumplido.", cat: "detalles" },
+            { id: 63, text: "Por ser tan honesta, clara y sincera conmigo siempre.", cat: "detalles" },
+            { id: 64, text: "Porque la fecha 16 de agosto representa el inicio de algo grandioso.", cat: "momentos" },
+            { id: 65, text: "Tu estilo propio y lo linda que te ves con lo que te pongas.", cat: "detalles" },
+            { id: 66, text: "Por cómo me buscas con la mirada cuando estás feliz.", cat: "detalles" },
+            { id: 67, text: "Nuestros planes de viajar y conocer nuevos lugares juntos.", cat: "futuro" },
+            { id: 68, text: "Por la dulzura con la que me dices 'te amo'.", cat: "detalles" },
+            { id: 69, text: "Porque ver tu sonrisa es la mejor recompensa de mi jornada.", cat: "detalles" },
+            { id: 70, text: "Por la complicidad tan bonita que logramos en tan solo 2 meses.", cat: "detalles" },
+            { id: 71, text: "Por cada tarde bonita que pasamos conversando.", cat: "momentos" },
+            { id: 72, text: "Porque eres la polola más linda del universo entero.", cat: "detalles" },
+            { id: 73, text: "Tus besos inesperados que me toman de sorpresa.", cat: "detalles" },
+            { id: 74, text: "Tu capacidad de alegrarme el ánimo en un segundo.", cat: "detalles" },
+            { id: 75, text: "Porque quiero seguir construyendo esta historia a tu lado.", cat: "futuro" },
+            { id: 76, text: "Por romper la rutina con tu amor tan sano.", cat: "momentos" },
+            { id: 77, text: "Nuestras manos entrelazadas al caminar juntos.", cat: "detalles" },
+            { id: 78, text: "Por ser lo primero en lo que pienso en la mañana.", cat: "detalles" },
+            { id: 79, text: "Porque contigo las risas son siempre espontáneas.", cat: "detalles" },
+            { id: 80, text: "Por el cuidado con el que cultivamos nuestro cariño diario.", cat: "futuro" },
+            { id: 81, text: "Tus despedidas cariñosas cuando nos toca volver a casa.", cat: "momentos" },
+            { id: 82, text: "Porque nos apoyamos mutuamente en el cansancio o el estudio.", cat: "detalles" },
+            { id: 83, text: "Por las fotos lindas que guardamos en nuestra galería.", cat: "momentos" },
+            { id: 84, text: "Por la química pura e innegable desde el primer momento.", cat: "jumbo" },
+            { id: 85, text: "Porque eres lo mejor que me ha pasado en este 2026.", cat: "detalles" },
+            { id: 86, text: "Por tu determinación y fuerza para hacer tus cosas.", cat: "detalles" },
+            { id: 87, text: "La paz de saber que nos elegimos con total seguridad.", cat: "futuro" },
+            { id: 88, text: "Tus palabras de ánimo cuando tengo pruebas exigentes.", cat: "detalles" },
+            { id: 89, text: "Porque a tu lado me convierto en la mejor versión de mí.", cat: "detalles" },
+            { id: 90, text: "Por tus abrazos cálidos que reconfortan el alma.", cat: "momentos" },
+            { id: 91, text: "Tu carita de sorpresa feliz cuando te entrego un detalle.", cat: "detalles" },
+            { id: 92, text: "Por las promesas lindas que tenemos por cumplir.", cat: "futuro" },
+            { id: 93, text: "Porque eres mi persona favorita de todo este mundo.", cat: "detalles" },
+            { id: 94, text: "Por tus 20 años tan radiantes, llenos de luz y bondad.", cat: "detalles" },
+            { id: 95, text: "Por mis 21 años celebrando haberte conocido.", cat: "detalles" },
+            { id: 96, text: "Porque el Jumbo fue solo el escenario inicial de nuestro gran amor.", cat: "jumbo" },
+            { id: 97, text: "Por las cientos de salidas y experiencias que vendrán.", cat: "futuro" },
+            { id: 98, text: "Porque mi amor por ti no para de crecer día a día.", cat: "detalles" },
+            { id: 99, text: "Por ser simplemente mi amada Catalina.", cat: "detalles" },
+            { id: 100, text: "¡Porque te amo con toda mi alma hoy y siempre!", cat: "futuro" }
+        ];
+
+        let revealedState = new Set();
+        let currentCat = 'all';
+
+        function renderReasons() {
+            const grid = document.getElementById('reasonsGrid');
+            const searchVal = document.getElementById('reasonSearch').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = reasonsData.filter(r => {
+                const matchesCat = currentCat === 'all' || r.cat === currentCat;
+                const matchesSearch = r.text.toLowerCase().includes(searchVal) || r.id.toString().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach(item => {
+                const isRevealed = revealedState.has(item.id);
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border transition-all duration-300 cursor-pointer relative flex flex-col justify-between min-h-[120px] ${
+                    isRevealed 
+                    ? 'bg-white border-rose-200 shadow-sm hover:shadow-md hover:-translate-y-1' 
+                    : 'bg-rose-100/60 border-rose-200/60 hover:bg-rose-100 flex items-center justify-center text-center'
+                }`;
+
+                if (isRevealed) {
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between w-full mb-2">
+                            <span class="text-[10px] font-bold text-jumbogreen bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">Razón #${item.id}</span>
+                            <i data-lucide="heart" class="w-3.5 h-3.5 text-rosepink fill-current"></i>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-700 font-medium leading-snug">${item.text}</p>
+                        <span class="text-[9px] text-gray-400 capitalize mt-2 self-end italic">${item.cat}</span>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="flex flex-col items-center gap-1.5 py-2">
+                            <span class="w-8 h-8 rounded-full bg-white text-burgundy flex items-center justify-center font-bold text-xs shadow-sm">
+                                ${item.id}
+                            </span>
+                            <span class="text-[11px] font-semibold text-burgundy/80 flex items-center gap-1">
+                                Tocar para descubrir ♡
+                            </span>
+                        </div>
+                    `;
+                }
+
+                card.onclick = () => {
+                    if (!isRevealed) {
+                        revealedState.add(item.id);
+                        document.getElementById('revealedCount').innerText = revealedState.size;
+                        renderReasons();
+                    }
+                };
+
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function filterReasons() { renderReasons(); }
+
+        function setCategoryFilter(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = "cat-btn px-3 py-1.5 rounded-full bg-rosepink text-white font-medium transition-all shadow-sm";
+                } else {
+                    btn.className = "cat-btn px-3 py-1.5 rounded-full bg-white text-gray-600 hover:bg-rose-50 border border-rose-200 transition-all";
+                }
+            });
+            document.getElementById('categoryLabelInfo').innerText = cat === 'all' ? 'Mostrando todas' : `Categoría: ${cat}`;
+            renderReasons();
+        }
+
+        function revealAllReasons() {
+            reasonsData.forEach(r => revealedState.add(r.id));
+            document.getElementById('revealedCount').innerText = revealedState.size;
+            renderReasons();
+        }
+
+        function hideAllReasons() {
+            revealedState.clear();
+            document.getElementById('revealedCount').innerText = revealedState.size;
+            renderReasons();
+        }
+
+        function showRandomReason() {
+            const unrevealed = reasonsData.filter(r => !revealedState.has(r.id));
+            if (unrevealed.length > 0) {
+                const randomItem = unrevealed[Math.floor(Math.random() * unrevealed.length)];
+                revealedState.add(randomItem.id);
+                document.getElementById('revealedCount').innerText = revealedState.size;
+                renderReasons();
+                setTimeout(() => {
+                    alert(`✨ Razón #${randomItem.id}: "${randomItem.text}"`);
+                }, 100);
+            } else {
+                alert("¡Has descubierto las 100 razones por las que amo a Catalina! ❤️");
+            }
+        }
+
+        // --- 3. GALERÍA INTERACTIVA CON SUBIDA REAL DE ARCHIVOS DE IMAGEN Y LOCALSTORAGE ---
+        const defaultPhotos = [
+            {
+                id: 1,
+                title: "Nuestro Inicio de Pololeo",
+                date: "16 de Agosto de 2026",
+                desc: "El día en que oficialmente comenzamos este lindo camino juntos como pololos.",
+                url: "https://placehold.co/600x600/fbcfe8/881337?text=Nuestra+Primera+Foto"
+            },
+            {
+                id: 2,
+                title: "Sonrisas Compartidas",
+                date: "Septiembre de 2026",
+                desc: "Uno de nuestros paseos favoritos. Me encanta ver tu felicidad, Catalina.",
+                url: "https://placehold.co/600x600/fdf2f4/059669?text=Nicol%C3%A1s+y+Catalina"
+            }
+        ];
+
+        function getStoredPhotos() {
+            const stored = localStorage.getItem('nico_catalina_photos');
+            return stored ? JSON.parse(stored) : defaultPhotos;
+        }
+
+        function saveStoredPhotos(photosArray) {
+            localStorage.setItem('nico_catalina_photos', JSON.stringify(photosArray));
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            const photos = getStoredPhotos();
+            grid.innerHTML = '';
+
+            if (photos.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 glass-card rounded-2xl p-6">
+                        <i data-lucide="image" class="w-10 h-10 text-rosepink mx-auto mb-2 opacity-60"></i>
+                        <p class="text-sm font-semibold text-gray-600">Aún no hay fotos en la galería.</p>
+                        <p class="text-xs text-gray-400 mt-1">¡Presiona el botón "Subir Foto Nueva" para agregar la primera!</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            photos.forEach((photo) => {
+                const item = document.createElement('div');
+                item.className = `glass-card p-3 rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group cursor-pointer`;
+
+                item.innerHTML = `
+                    <div onclick='openLightbox(${JSON.stringify(photo).replace(/'/g, "&apos;")})' class="relative overflow-hidden rounded-xl aspect-square bg-rose-50 mb-3">
+                        <img src="${photo.url}" alt="${photo.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-burgundy/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                            <i data-lucide="maximize-2" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-serif font-bold text-gray-800 text-base leading-snug">${photo.title}</h3>
+                            <button onclick="deletePhoto(${photo.id})" title="Eliminar foto" class="text-gray-300 hover:text-rose-500 transition-colors p-1">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-jumbogreen font-semibold mt-0.5 flex items-center gap-1">
+                            <i data-lucide="calendar" class="w-3 h-3"></i> ${photo.date}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1 line-clamp-2 italic">${photo.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+
+            lucide.createIcons();
+        }
+
+        function deletePhoto(id) {
+            if (confirm("¿Quieres eliminar esta foto de la galería?")) {
+                let photos = getStoredPhotos();
+                photos = photos.filter(p => p.id !== id);
+                saveStoredPhotos(photos);
+                renderGallery();
+            }
+        }
+
+        function openLightbox(photo) {
+            document.getElementById('lightboxImg').src = photo.url;
+            document.getElementById('lightboxTitle').innerText = photo.title;
+            document.getElementById('lightboxDate').querySelector('span').innerText = photo.date;
+            document.getElementById('lightboxDesc').innerText = photo.desc;
+            document.getElementById('photoLightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('photoLightbox').classList.add('hidden');
+        }
+
+        function openAddPhotoModal() {
+            document.getElementById('addPhotoModal').classList.remove('hidden');
+        }
+
+        function closeAddPhotoModal() {
+            document.getElementById('addPhotoModal').classList.add('hidden');
+        }
+
+        function saveNewPhoto(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('photoFileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Por favor selecciona una imagen de tu dispositivo.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Url = event.target.result;
+                const newPhoto = {
+                    id: Date.now(),
+                    title: document.getElementById('photoTitleInput').value,
+                    date: document.getElementById('photoDateInput').value,
+                    url: base64Url,
+                    desc: document.getElementById('photoDescInput').value
+                };
+
+                const photos = getStoredPhotos();
+                photos.unshift(newPhoto);
+                saveStoredPhotos(photos);
+                renderGallery();
+                closeAddPhotoModal();
+                e.target.reset();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- 4. IDEAS DE SALIDAS (20 TARJETAS + RANDOMIZADOR) ---
+        const ideasData = [
+            { id: 1,  emoji: "🧺", cat: "Románticas",      title: "Picnic en el parque",        desc: "Una manta, algo rico para comer y quedarnos conversando hasta que baje el sol." },
+            { id: 2,  emoji: "🌇", cat: "Románticas",      title: "Atardecer en un cerro",      desc: "Subir a un cerro de Santiago a ver cómo cae el sol y la ciudad se va encendiendo, tomados de la mano." },
+            { id: 3,  emoji: "🏖️", cat: "Aventura",        title: "Día de playa",               desc: "Escapada a la costa: caminar por la orilla, comer helado y ver el atardecer en el mar." },
+            { id: 4,  emoji: "🎬", cat: "Tranqui",         title: "Cine con cabritas",          desc: "Elegir una película, cabritas para compartir y apoyarme en tu hombro durante toda la función." },
+            { id: 5,  emoji: "🍦", cat: "Comida",          title: "Tour de helados",            desc: "Probar helados de distintos lugares y darle un puntaje a cada sabor. Gana el que más nos haga reír." },
+            { id: 6,  emoji: "🛒", cat: "Nuestra historia", title: "Jumbo sin uniforme",        desc: "Volver donde todo empezó, pero esta vez de paseo: carrito, snacks y cero turnos." },
+            { id: 7,  emoji: "🎤", cat: "Divertidas",      title: "Karaoke a todo volumen",     desc: "Cantar Embarrassed y todas las canciones que nos sepamos, aunque desafinemos." },
+            { id: 8,  emoji: "🍕", cat: "Comida",          title: "Pizza casera juntos",        desc: "Armar nuestra propia pizza, cada uno con sus ingredientes, y ver quién la deja más bonita." },
+            { id: 9,  emoji: "📸", cat: "Nuestra historia", title: "Sesión de fotos",           desc: "Salir a sacarnos fotos por ahí y subir las mejores a la galería de esta página." },
+            { id: 10, emoji: "🎡", cat: "Aventura",        title: "Parque de diversiones",      desc: "Subirnos a los juegos, gritar juntos y terminar con algo dulce." },
+            { id: 11, emoji: "☕", cat: "Tranqui",         title: "Café y postres",             desc: "Una cafetería nueva, un postre para compartir y conversar sin mirar la hora." },
+            { id: 12, emoji: "🚲", cat: "Aventura",        title: "Paseo en bicicleta",         desc: "Pedalear juntos por un lugar bonito y parar a descansar donde más nos guste." },
+            { id: 13, emoji: "🎳", cat: "Divertidas",      title: "Bowling o juegos",           desc: "Bowling, arcade o juegos de mesa. El que pierde invita el helado." },
+            { id: 14, emoji: "🍜", cat: "Comida",          title: "Comida que nunca probamos",  desc: "Ir a un restaurante de una cocina nueva para los dos y pedir algo distinto." },
+            { id: 15, emoji: "⛰️", cat: "Aventura",        title: "Día en el Cajón del Maipo",  desc: "Un día de naturaleza: montaña, río y aire fresco, lejos del ruido de la ciudad." },
+            { id: 16, emoji: "🌌", cat: "Románticas",      title: "Noche de estrellas",         desc: "Una manta, algo calentito y mirar el cielo juntos, sin apuro." },
+            { id: 17, emoji: "🎨", cat: "Divertidas",      title: "Tarde creativa",             desc: "Pintar o hacer manualidades, y que cada uno dibuje al otro para reírnos del resultado." },
+            { id: 18, emoji: "🕯️", cat: "Románticas",      title: "Cena del día 16",            desc: "Celebrar un mes más juntos con una cena rica. Una tradición para cada 16." },
+            { id: 19, emoji: "💌", cat: "Románticas",      title: "Cita sorpresa",              desc: "Uno planea todo en secreto y el otro solo se deja llevar. Después nos turnamos." },
+            { id: 20, emoji: "🛋️", cat: "Tranqui",         title: "Maratón en casa con frazadas", desc: "Series o películas, frazadas, snacks y cero planes para mañana." }
+        ];
+
+        let revealedIdeas = new Set();
+        let ideaRolling = false;
+        let lastFeaturedId = null;
+
+        function updateIdeasCount() {
+            document.getElementById('ideasRevealedCount').innerText = revealedIdeas.size;
+        }
+
+        function renderIdeas(popId = null) {
+            const grid = document.getElementById('ideasGrid');
+            grid.innerHTML = '';
+
+            ideasData.forEach(item => {
+                const isRevealed = revealedIdeas.has(item.id);
+                const card = document.createElement('div');
+                card.className = `p-3 sm:p-4 rounded-2xl border transition-all duration-300 cursor-pointer relative flex flex-col min-h-[170px] sm:min-h-[190px] ${
+                    isRevealed
+                    ? 'bg-white border-rose-200 shadow-sm hover:shadow-md hover:-translate-y-1 justify-between'
+                    : 'bg-rose-100/60 border-rose-200/60 hover:bg-rose-100 items-center justify-center text-center'
+                } ${popId === item.id ? 'idea-pop' : ''}`;
+
+                if (isRevealed) {
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between w-full">
+                            <span class="text-3xl leading-none">${item.emoji}</span>
+                            <span class="text-[9px] font-bold text-jumbogreen bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">#${item.id}</span>
+                        </div>
+                        <div class="mt-2">
+                            <h3 class="font-serif font-bold text-burgundy text-sm sm:text-base leading-snug">${item.title}</h3>
+                            <p class="text-[11px] sm:text-xs text-gray-600 mt-1 leading-snug">${item.desc}</p>
+                        </div>
+                        <span class="text-[9px] text-rosepink font-semibold uppercase tracking-wider mt-2 self-end">${item.cat}</span>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="flex flex-col items-center gap-2 py-2">
+                            <span class="w-10 h-10 rounded-full bg-white text-burgundy flex items-center justify-center font-bold text-sm shadow-sm">${item.id}</span>
+                            <span class="text-[11px] font-semibold text-burgundy/80">Toca para descubrir ♡</span>
+                        </div>
+                    `;
+                    card.onclick = () => {
+                        revealedIdeas.add(item.id);
+                        updateIdeasCount();
+                        renderIdeas(item.id);
+                    };
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        function revealAllIdeas() {
+            ideasData.forEach(i => revealedIdeas.add(i.id));
+            updateIdeasCount();
+            renderIdeas();
+        }
+
+        function hideAllIdeas() {
+            revealedIdeas.clear();
+            updateIdeasCount();
+            closeFeatured();
+            renderIdeas();
+        }
+
+        function closeFeatured() {
+            if (ideaRolling) return;
+            document.getElementById('ideaFeatured').classList.add('hidden');
+        }
+
+        function rollIdea() {
+            if (ideaRolling) return;
+            ideaRolling = true;
+
+            // Prioriza las que aún no descubrió; si ya vio todas, elige entre todas (sin repetir la última)
+            let pool = ideasData.filter(i => !revealedIdeas.has(i.id));
+            if (pool.length === 0) pool = ideasData.filter(i => i.id !== lastFeaturedId);
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+
+            const panel = document.getElementById('ideaFeatured');
+            const emojiEl = document.getElementById('featEmoji');
+            const titleEl = document.getElementById('featTitle');
+            const catEl = document.getElementById('featCat');
+            const descEl = document.getElementById('featDesc');
+
+            panel.classList.remove('hidden');
+            titleEl.innerText = 'Eligiendo…';
+            catEl.classList.add('hidden');
+            descEl.innerText = '';
+            emojiEl.classList.add('dice-shake');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let ticks = 0;
+            const iv = setInterval(() => {
+                emojiEl.innerText = ideasData[Math.floor(Math.random() * ideasData.length)].emoji;
+                ticks++;
+                if (ticks >= 9) {
+                    clearInterval(iv);
+                    emojiEl.classList.remove('dice-shake');
+                    emojiEl.innerText = pick.emoji;
+                    titleEl.innerText = pick.title;
+                    catEl.innerText = pick.cat;
+                    catEl.classList.remove('hidden');
+                    descEl.innerText = pick.desc;
+                    panel.firstElementChild.classList.remove('feat-in');
+                    void panel.firstElementChild.offsetWidth;
+                    panel.firstElementChild.classList.add('feat-in');
+
+                    lastFeaturedId = pick.id;
+                    revealedIdeas.add(pick.id);
+                    updateIdeasCount();
+                    renderIdeas(pick.id);
+                    ideaRolling = false;
+                }
+            }, 90);
+        }
+
+        // --- 5. NAVEGACIÓN ENTRE PESTAÑAS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap text-gray-600 hover:text-burgundy";
+            });
+
+            const activeSec = document.getElementById(`sec-${tabId}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap bg-rosepink text-white shadow-sm";
+            }
+        }
+
+        // --- 6. CARTA DESPLEGABLE ---
+        let isLetterOpen = true;
+        function toggleEnvelope() {
+            const letter = document.getElementById('letterPaperCard');
+            const btnText = document.getElementById('envelopeBtnText');
+
+            if (isLetterOpen) {
+                letter.style.opacity = '0.3';
+                letter.style.transform = 'scale(0.96)';
+                btnText.innerText = 'Desplegar Carta';
+                isLetterOpen = false;
+            } else {
+                letter.style.opacity = '1';
+                letter.style.transform = 'scale(1)';
+                btnText.innerText = 'Guardar Carta';
+                isLetterOpen = true;
+                triggerConfetti();
+            }
+        }
+
+        // --- 7. ISLA DE MÚSICA: NUESTRA CANCIÓN ---
+        const island = document.getElementById('musicIsland');
+        const songAudio = document.getElementById('songAudio');
+
+        function setPlayingUI(isPlaying) {
+            island.classList.toggle('playing', isPlaying);
+            island.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+            document.getElementById('iconPlay').classList.toggle('hidden', isPlaying);
+            document.getElementById('iconPause').classList.toggle('hidden', !isPlaying);
+            document.getElementById('islandSub').innerText = isPlaying ? 'Sonando ♡' : 'Toca para escuchar';
+            clampIsland();
+        }
+
+        async function toggleSong() {
+            if (songAudio.paused) {
+                setPlayingUI(true);                       // respuesta inmediata al toque
+                try {
+                    await songAudio.play();
+                } catch (err) {
+                    // AbortError = la pausaron mientras cargaba: es normal, el evento 'pause' ya ajusta el botón
+                    if (!err || err.name !== 'AbortError') {
+                        console.error('No se pudo reproducir:', err);
+                        setPlayingUI(false);
+                    }
+                }
+            } else {
+                songAudio.pause();
+            }
+        }
+
+        // El botón siempre refleja el estado real del audio
+        songAudio.addEventListener('playing', () => setPlayingUI(true));
+        songAudio.addEventListener('pause',   () => setPlayingUI(false));
+        songAudio.addEventListener('ended',   () => setPlayingUI(false));
+        songAudio.addEventListener('error',   () => setPlayingUI(false));
+
+        // --- Posición y arrastre ---
+        const ISLAND_MARGIN = 8;
+
+        function setIslandPos(x, y) {
+            const maxX = window.innerWidth - island.offsetWidth - ISLAND_MARGIN;
+            const maxY = window.innerHeight - island.offsetHeight - ISLAND_MARGIN;
+            island.style.left = Math.min(Math.max(ISLAND_MARGIN, x), Math.max(ISLAND_MARGIN, maxX)) + 'px';
+            island.style.top = Math.min(Math.max(ISLAND_MARGIN, y), Math.max(ISLAND_MARGIN, maxY)) + 'px';
+        }
+
+        function clampIsland() {
+            const r = island.getBoundingClientRect();
+            setIslandPos(r.left, r.top);
+        }
+
+        function saveIslandPos() {
+            try {
+                const r = island.getBoundingClientRect();
+                localStorage.setItem('nico_catalina_island', JSON.stringify({
+                    x: r.left / window.innerWidth,
+                    y: r.top / window.innerHeight
+                }));
+            } catch (e) { /* sin almacenamiento: no pasa nada */ }
+        }
+
+        function initIslandPos() {
+            let saved = null;
+            try { saved = JSON.parse(localStorage.getItem('nico_catalina_island')); } catch (e) {}
+            if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+                setIslandPos(saved.x * window.innerWidth, saved.y * window.innerHeight);
+            } else {
+                // Por defecto: abajo a la derecha, para no tapar el menú
+                setIslandPos(window.innerWidth, window.innerHeight - island.offsetHeight - 24);
+            }
+        }
+        window.addEventListener('resize', clampIsland);
+
+        let islandDrag = null;
+        let lastDragEnd = 0;
+        island.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            const r = island.getBoundingClientRect();
+            islandDrag = { id: e.pointerId, ox: e.clientX - r.left, oy: e.clientY - r.top, sx: e.clientX, sy: e.clientY, moved: false };
+            island.setPointerCapture(e.pointerId);
+        });
+        island.addEventListener('pointermove', (e) => {
+            if (!islandDrag || e.pointerId !== islandDrag.id) return;
+            if (!islandDrag.moved && Math.hypot(e.clientX - islandDrag.sx, e.clientY - islandDrag.sy) > 6) {
+                islandDrag.moved = true;
+                island.classList.add('dragging');
+            }
+            if (islandDrag.moved) setIslandPos(e.clientX - islandDrag.ox, e.clientY - islandDrag.oy);
+        });
+        function endIslandDrag(e) {
+            if (!islandDrag || e.pointerId !== islandDrag.id) return;
+            const wasMoved = islandDrag.moved;
+            islandDrag = null;
+            island.classList.remove('dragging');
+            try { island.releasePointerCapture(e.pointerId); } catch (err) {}
+            if (wasMoved) { saveIslandPos(); lastDragEnd = Date.now(); }
+        }
+        island.addEventListener('pointerup', endIslandDrag);
+        island.addEventListener('pointercancel', endIslandDrag);
+        // Un toque simple (sin arrastrar) = play / pausa
+        island.addEventListener('click', () => {
+            if (Date.now() - lastDragEnd < 400) return;   // venía de arrastrar, no es un toque
+            toggleSong();
+        });
+        island.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSong(); }
+        });
+
+        // --- 8. PARTÍCULAS CANVAS ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class HeartParticle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 12 + 6;
+                this.speedY = Math.random() * 1 + 0.4;
+                this.speedX = Math.sin(Math.random() * Math.PI) * 0.4;
+                this.opacity = Math.random() * 0.35 + 0.1;
+                this.color = `rgba(244, 114, 182, ${this.opacity})`;
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if (this.y < -20) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const d = this.size;
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-d / 2, -d / 2, -d, d / 3, 0, d);
+                ctx.bezierCurveTo(d, d / 3, d / 2, -d / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 22; i++) particles.push(new HeartParticle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+
+        function triggerConfetti() {
+            for (let i = 0; i < 15; i++) {
+                const p = new HeartParticle();
+                p.y = window.innerHeight / 2;
+                p.x = window.innerWidth / 2 + (Math.random() * 200 - 100);
+                p.speedY = Math.random() * 3 + 1;
+                p.opacity = 0.8;
+                particles.push(p);
+            }
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            switchTab('carta');
+            initIslandPos();
+            renderReasons();
+            renderGallery();
+            renderIdeas();
+            initParticles();
+            animateParticles();
+        };
+    </script>
+
+</body>
+</html>

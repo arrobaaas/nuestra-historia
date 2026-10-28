@@ -17,6 +17,7 @@
     <style>
 
         html { -webkit-text-size-adjust: 100%; }
+        @media (max-width: 640px) { input, textarea, select { font-size: 16px !important; } }
         .cat-btn { white-space: nowrap; flex-shrink: 0; }
         * { -webkit-tap-highlight-color: transparent; }
         button, [role="button"], a { touch-action: manipulation; }
@@ -281,26 +282,32 @@
             </div>
         </section>
 
-        <!-- INTERFAZ 3: FOTOS DE NOSOTROS (SUBIDA DIRECTA DESDE EL CELULAR / GUARDADO EN BROWSER) -->
+        <!-- INTERFAZ 3: FOTOS DE NOSOTROS (guardadas en la nube, las ven y suben los dos) -->
         <section id="sec-galeria" class="tab-content hidden transition-all duration-500">
             <div class="text-center max-w-xl mx-auto mb-6">
                 <span class="text-xs uppercase tracking-widest text-jumbogreen font-bold">Nuestros Recuerdos Favoritos</span>
                 <h2 class="font-serif text-3xl sm:text-4xl text-burgundy mt-1 font-bold">Galería de Fotos</h2>
-                <p class="text-sm text-gray-600 mt-2">Puedes subir las fotos que quieras directamente desde tu celular o computador.</p>
+                <p class="text-sm text-gray-600 mt-2">Los recuerdos que vamos guardando juntos ♡</p>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6">
-                <p class="text-xs text-gray-500 italic">
-                    📸 Sube tus fotos favoritas en formato PNG o JPG. Se guardarán en tu dispositivo automáticamente.
-                </p>
-                <button onclick="openAddPhotoModal()" class="glass-card hover:bg-white text-burgundy px-4 py-2.5 rounded-full text-xs font-bold shadow-md border border-rose-200 flex items-center justify-center gap-2 transition-all hover:scale-105 shrink-0">
-                    <i data-lucide="plus-circle" class="w-4 h-4 text-rosepink"></i>
-                    <span>Subir Foto Nueva</span>
-                </button>
+                <p id="galleryHint" class="text-xs text-gray-500 italic text-center sm:text-left"></p>
+                <div class="flex items-center justify-center gap-2 shrink-0">
+                    <button id="uploadPhotoBtn" onclick="openAddPhotoModal()" class="hidden glass-card hover:bg-white text-burgundy px-4 py-2.5 rounded-full text-xs font-bold shadow-md border border-rose-200 items-center justify-center gap-2 transition-all hover:scale-105">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-rosepink"></i>
+                        <span>Subir foto</span>
+                    </button>
+                    <button id="authBtn" onclick="onAuthBtn()" class="hidden glass-card hover:bg-white text-burgundy px-4 py-2.5 rounded-full text-xs font-bold shadow-md border border-rose-200 items-center justify-center gap-2 transition-all hover:scale-105">
+                        <i data-lucide="key-round" class="w-4 h-4 text-rosepink"></i>
+                        <span id="authBtnText">Entrar para subir fotos</span>
+                    </button>
+                </div>
             </div>
 
-            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Fotos cargadas dinámicamente -->
+            <div id="galleryStatus" class="hidden text-center text-sm text-gray-500 py-8 glass-card rounded-2xl"></div>
+
+            <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+                <!-- Fotos cargadas desde la nube -->
             </div>
         </section>
 
@@ -388,38 +395,68 @@
         </div>
     </div>
 
-    <!-- MODAL PARA SUBIR FOTO REAL (DESDE CELULAR O ARCHIVO LOCAL) -->
+    <!-- MODAL PARA SUBIR FOTO (se guarda en la nube) -->
     <div id="addPhotoModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl relative border border-rose-100">
-            <button onclick="closeAddPhotoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <button onclick="closeAddPhotoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Cerrar">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
             <h3 class="font-serif text-xl font-bold text-burgundy mb-1">Subir Foto Especial</h3>
-            <p class="text-xs text-gray-500 mb-4">Selecciona una imagen en formato PNG o JPG desde tu celular o equipo.</p>
+            <p class="text-xs text-gray-500 mb-4">Elige una foto de tu celular o computador. Queda guardada para los dos.</p>
             <form onsubmit="saveNewPhoto(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Título de la Foto</label>
-                    <input type="text" id="photoTitleInput" required placeholder="Ej. Nuestro paseo juntos" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Título de la foto</label>
+                    <input type="text" id="photoTitleInput" required maxlength="80" placeholder="Ej. Nuestro paseo juntos" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Fecha de la Foto</label>
-                    <input type="text" id="photoDateInput" required placeholder="Ej. 16 de Agosto" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Fecha</label>
+                    <input type="text" id="photoDateInput" required maxlength="40" placeholder="Ej. 16 de Agosto" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Seleccionar Imagen (PNG, JPG, JPEG)</label>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Foto</label>
                     <input type="file" id="photoFileInput" accept="image/*" required class="w-full px-2 py-1.5 border border-rose-200 rounded-xl text-xs bg-rose-50/50 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rosepink file:text-white hover:file:bg-rose-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Descripción / Recuerdo</label>
-                    <textarea id="photoDescInput" rows="3" required placeholder="¿Qué hizo especial este momento?" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50"></textarea>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Descripción / recuerdo</label>
+                    <textarea id="photoDescInput" rows="3" required maxlength="300" placeholder="¿Qué hizo especial este momento?" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50"></textarea>
                 </div>
+                <p id="uploadError" class="hidden text-xs text-rose-600 font-semibold"></p>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeAddPhotoModal()" class="px-4 py-2 text-xs text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 text-xs bg-rosepink hover:bg-rose-500 text-white font-semibold rounded-xl shadow-sm">Guardar Foto</button>
+                    <button type="submit" id="uploadSubmit" class="px-4 py-2 text-xs bg-rosepink hover:bg-rose-500 disabled:opacity-60 text-white font-semibold rounded-xl shadow-sm">Guardar foto</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- MODAL PARA ENTRAR (solo Nicolás y Catalina pueden subir o borrar fotos) -->
+    <div id="loginModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full max-h-[90vh] overflow-y-auto shadow-xl relative border border-rose-100">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Cerrar">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="font-serif text-xl font-bold text-burgundy mb-1">Entrar</h3>
+            <p class="text-xs text-gray-500 mb-4">Para subir fotos, entra con tu cuenta. Solo lo necesitas una vez en este dispositivo.</p>
+            <form onsubmit="submitLogin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Correo</label>
+                    <input type="email" id="loginEmail" required autocomplete="email" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" required autocomplete="current-password" class="w-full px-3 py-2 border border-rose-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rosepink/50">
+                </div>
+                <p id="loginError" class="hidden text-xs text-rose-600 font-semibold"></p>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeLoginModal()" class="px-4 py-2 text-xs text-gray-600 hover:bg-gray-100 rounded-xl">Cancelar</button>
+                    <button type="submit" id="loginSubmit" class="px-4 py-2 text-xs bg-rosepink hover:bg-rose-500 disabled:opacity-60 text-white font-semibold rounded-xl shadow-sm">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conexión a la base de datos (ver README) -->
+    <script src="config.js"></script>
 
     <!-- JAVASCRIPT LÓGICO -->
     <script>
@@ -658,86 +695,216 @@
             }
         }
 
-        // --- 3. GALERÍA INTERACTIVA CON SUBIDA REAL DE ARCHIVOS DE IMAGEN Y LOCALSTORAGE ---
-        const defaultPhotos = [
-            {
-                id: 1,
-                title: "Nuestro Inicio de Pololeo",
-                date: "16 de Agosto de 2026",
-                desc: "El día en que oficialmente comenzamos este lindo camino juntos como pololos.",
-                url: "https://placehold.co/600x600/fbcfe8/881337?text=Nuestra+Primera+Foto"
-            },
-            {
-                id: 2,
-                title: "Sonrisas Compartidas",
-                date: "Septiembre de 2026",
-                desc: "Uno de nuestros paseos favoritos. Me encanta ver tu felicidad, Catalina.",
-                url: "https://placehold.co/600x600/fdf2f4/059669?text=Nicol%C3%A1s+y+Catalina"
-            }
-        ];
+        // --- 3. GALERÍA COMPARTIDA (Supabase vía API REST, sin librerías) ---
+        const CFG = window.CATALINA_CONFIG || {};
+        const SB_URL = (CFG.supabaseUrl || '').replace(/\/+$/, '');
+        const SB_KEY = CFG.supabaseAnonKey || '';
+        const CLOUD_ON = !!(SB_URL && SB_KEY);
+        const BUCKET = 'fotos';
+        const SESSION_KEY = 'nico_catalina_session';
 
-        function getStoredPhotos() {
-            const stored = localStorage.getItem('nico_catalina_photos');
-            return stored ? JSON.parse(stored) : defaultPhotos;
+        let galleryPhotos = [];
+        let galleryLoaded = false;
+        let session = null;
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
-        function saveStoredPhotos(photosArray) {
-            localStorage.setItem('nico_catalina_photos', JSON.stringify(photosArray));
+        // ----- Sesión (solo Nicolás y Catalina pueden subir / borrar) -----
+        function loadSession() {
+            try { session = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { session = null; }
+        }
+        function storeSession(s) {
+            session = s;
+            try { if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s)); else localStorage.removeItem(SESSION_KEY); } catch (e) {}
+        }
+        function sessionFromAuth(d) {
+            return {
+                access_token: d.access_token,
+                refresh_token: d.refresh_token,
+                expires_at: Math.floor(Date.now() / 1000) + (d.expires_in || 3600),
+                email: (d.user && d.user.email) || ''
+            };
+        }
+        async function authRequest(grant, body) {
+            const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=${grant}`, {
+                method: 'POST',
+                headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) {
+                const raw = d.error_description || d.msg || d.message || '';
+                throw new Error(/invalid/i.test(raw) ? 'Correo o contraseña incorrectos' : (raw || 'No pude entrar. Intenta de nuevo.'));
+            }
+            return d;
+        }
+        async function getAccessToken() {
+            if (!session) return null;
+            if (session.expires_at - 60 > Math.floor(Date.now() / 1000)) return session.access_token;
+            try {
+                const d = await authRequest('refresh_token', { refresh_token: session.refresh_token });
+                storeSession(sessionFromAuth(d));
+                return session.access_token;
+            } catch (e) {
+                storeSession(null);
+                updateAuthUI();
+                return null;
+            }
+        }
+        async function sbFetch(path, opts) {
+            opts = opts || {};
+            const token = await getAccessToken();
+            const headers = Object.assign({ apikey: SB_KEY }, opts.headers || {});
+            if (token) headers.Authorization = 'Bearer ' + token;
+            else if (SB_KEY.indexOf('eyJ') === 0) headers.Authorization = 'Bearer ' + SB_KEY;   // clave "anon" clásica (JWT)
+            const r = await fetch(SB_URL + path, Object.assign({}, opts, { headers }));
+            if (!r.ok) {
+                let msg = '';
+                try { const d = await r.json(); msg = d.message || d.error || ''; } catch (e) {}
+                throw new Error(msg || ('Error ' + r.status));
+            }
+            return r;
         }
 
-        function renderGallery() {
-            const grid = document.getElementById('galleryGrid');
-            const photos = getStoredPhotos();
-            grid.innerHTML = '';
+        function photoUrl(path) {
+            return `${SB_URL}/storage/v1/object/public/${BUCKET}/${encodeURIComponent(path)}`;
+        }
 
-            if (photos.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 glass-card rounded-2xl p-6">
-                        <i data-lucide="image" class="w-10 h-10 text-rosepink mx-auto mb-2 opacity-60"></i>
-                        <p class="text-sm font-semibold text-gray-600">Aún no hay fotos en la galería.</p>
-                        <p class="text-xs text-gray-400 mt-1">¡Presiona el botón "Subir Foto Nueva" para agregar la primera!</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
+        // ----- Interfaz de sesión -----
+        function updateAuthUI() {
+            const logged = !!session;
+            const authBtn = document.getElementById('authBtn');
+            const uploadBtn = document.getElementById('uploadPhotoBtn');
+            authBtn.classList.toggle('hidden', !CLOUD_ON);
+            uploadBtn.classList.toggle('hidden', !(CLOUD_ON && logged));
+            document.getElementById('authBtnText').innerText = logged ? 'Salir' : 'Entrar para subir fotos';
+            document.getElementById('galleryHint').innerText = !CLOUD_ON ? '' :
+                (logged ? 'Las fotos que subas las ven los dos ♡' : 'Para subir fotos, entra con tu cuenta.');
+            renderGallery();
+        }
+        function onAuthBtn() { if (session) logout(); else openLoginModal(); }
+        async function logout() {
+            const token = session && session.access_token;
+            storeSession(null);
+            updateAuthUI();
+            if (token) { try { await fetch(`${SB_URL}/auth/v1/logout`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + token } }); } catch (e) {} }
+        }
+        function openLoginModal() {
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        async function submitLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginSubmit');
+            const err = document.getElementById('loginError');
+            err.classList.add('hidden');
+            btn.disabled = true; btn.innerText = 'Entrando…';
+            try {
+                const d = await authRequest('password', {
+                    email: document.getElementById('loginEmail').value.trim(),
+                    password: document.getElementById('loginPassword').value
+                });
+                storeSession(sessionFromAuth(d));
+                document.getElementById('loginPassword').value = '';
+                closeLoginModal();
+                updateAuthUI();
+            } catch (ex) {
+                err.innerText = ex.message;
+                err.classList.remove('hidden');
+            } finally {
+                btn.disabled = false; btn.innerText = 'Entrar';
             }
+        }
 
-            photos.forEach((photo) => {
-                const item = document.createElement('div');
-                item.className = `glass-card p-3 rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group cursor-pointer`;
+        // ----- Fotos -----
+        function setGalleryStatus(msg) {
+            const el = document.getElementById('galleryStatus');
+            el.innerText = msg || '';
+            el.classList.toggle('hidden', !msg);
+        }
 
-                item.innerHTML = `
-                    <div onclick='openLightbox(${JSON.stringify(photo).replace(/'/g, "&apos;")})' class="relative overflow-hidden rounded-xl aspect-square bg-rose-50 mb-3">
-                        <img src="${photo.url}" alt="${photo.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        async function loadPhotos() {
+            if (!CLOUD_ON) return;
+            setGalleryStatus('Cargando fotos…');
+            try {
+                const r = await sbFetch('/rest/v1/fotos?select=*&order=created_at.desc');
+                galleryPhotos = await r.json();
+                galleryLoaded = true;
+                setGalleryStatus('');
+            } catch (e) {
+                console.error(e);
+                setGalleryStatus('No pude cargar las fotos ahora. Intenta de nuevo en un ratito ♡');
+            }
+            renderGallery();
+        }
+
+        function photoCardHtml(p) {
+            const id = escapeHtml(p.id);
+            return `
+                <div class="glass-card p-2.5 sm:p-3 rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group">
+                    <div data-open="${id}" class="relative overflow-hidden rounded-xl aspect-square bg-rose-50 mb-3 cursor-pointer">
+                        <img src="${escapeHtml(photoUrl(p.path))}" alt="${escapeHtml(p.titulo)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         <div class="absolute inset-0 bg-burgundy/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                             <i data-lucide="maximize-2" class="w-6 h-6"></i>
                         </div>
                     </div>
                     <div class="px-1">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-serif font-bold text-gray-800 text-base leading-snug">${photo.title}</h3>
-                            <button onclick="deletePhoto(${photo.id})" title="Eliminar foto" class="text-gray-300 hover:text-rose-500 transition-colors p-1">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>
+                        <div class="flex items-center justify-between gap-1">
+                            <h3 class="font-serif font-bold text-gray-800 text-sm sm:text-base leading-snug">${escapeHtml(p.titulo)}</h3>
+                            ${session ? `<button data-del="${id}" title="Eliminar foto" class="text-gray-300 hover:text-rose-500 transition-colors p-1 shrink-0"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ''}
                         </div>
                         <p class="text-[11px] text-jumbogreen font-semibold mt-0.5 flex items-center gap-1">
-                            <i data-lucide="calendar" class="w-3 h-3"></i> ${photo.date}
+                            <i data-lucide="calendar" class="w-3 h-3"></i> ${escapeHtml(p.fecha)}
                         </p>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-2 italic">${photo.desc}</p>
+                        <p class="text-xs text-gray-500 mt-1 line-clamp-2 italic">${escapeHtml(p.descripcion)}</p>
                     </div>
-                `;
-                grid.appendChild(item);
-            });
+                </div>`;
+        }
 
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            if (!CLOUD_ON) {
+                grid.innerHTML = '';
+                setGalleryStatus('Muy pronto vamos a guardar aquí nuestras fotos ♡');
+                return;
+            }
+            if (galleryLoaded && galleryPhotos.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 glass-card rounded-2xl p-6">
+                        <i data-lucide="image" class="w-10 h-10 text-rosepink mx-auto mb-2 opacity-60"></i>
+                        <p class="text-sm font-semibold text-gray-600">Aún no hay fotos en la galería.</p>
+                        <p class="text-xs text-gray-400 mt-1">${session ? '¡Presiona "Subir foto" para agregar la primera!' : 'Entra con tu cuenta para subir la primera.'}</p>
+                    </div>`;
+            } else {
+                grid.innerHTML = galleryPhotos.map(photoCardHtml).join('');
+            }
             lucide.createIcons();
         }
 
-        function deletePhoto(id) {
-            if (confirm("¿Quieres eliminar esta foto de la galería?")) {
-                let photos = getStoredPhotos();
-                photos = photos.filter(p => p.id !== id);
-                saveStoredPhotos(photos);
-                renderGallery();
+        document.getElementById('galleryGrid').addEventListener('click', (e) => {
+            const del = e.target.closest('[data-del]');
+            if (del) { e.stopPropagation(); deletePhoto(del.dataset.del); return; }
+            const open = e.target.closest('[data-open]');
+            if (open) {
+                const p = galleryPhotos.find(x => String(x.id) === open.dataset.open);
+                if (p) openLightbox({ url: photoUrl(p.path), title: p.titulo, date: p.fecha, desc: p.descripcion });
+            }
+        });
+
+        async function deletePhoto(id) {
+            const p = galleryPhotos.find(x => String(x.id) === String(id));
+            if (!p || !confirm('¿Quieres eliminar esta foto de la galería?')) return;
+            try {
+                const r = await sbFetch(`/rest/v1/fotos?id=eq.${encodeURIComponent(p.id)}`, { method: 'DELETE', headers: { Prefer: 'return=representation' } });
+                const deleted = await r.json().catch(() => []);
+                if (!deleted.length) throw new Error('No se pudo eliminar. Puede que tu sesión haya vencido: sal y vuelve a entrar.');
+                try { await sbFetch(`/storage/v1/object/${BUCKET}/${encodeURIComponent(p.path)}`, { method: 'DELETE' }); } catch (e) { console.warn('Archivo no borrado:', e); }
+                await loadPhotos();
+            } catch (err) {
+                alert(err.message);
             }
         }
 
@@ -748,48 +915,92 @@
             document.getElementById('lightboxDesc').innerText = photo.desc;
             document.getElementById('photoLightbox').classList.remove('hidden');
         }
-
-        function closeLightbox() {
-            document.getElementById('photoLightbox').classList.add('hidden');
-        }
+        function closeLightbox() { document.getElementById('photoLightbox').classList.add('hidden'); }
 
         function openAddPhotoModal() {
+            if (!session) { openLoginModal(); return; }
+            document.getElementById('uploadError').classList.add('hidden');
+            const dateInput = document.getElementById('photoDateInput');
+            if (!dateInput.value) dateInput.value = new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('addPhotoModal').classList.remove('hidden');
         }
+        function closeAddPhotoModal() { document.getElementById('addPhotoModal').classList.add('hidden'); }
 
-        function closeAddPhotoModal() {
-            document.getElementById('addPhotoModal').classList.add('hidden');
+        // Achica la foto antes de subirla: se ve igual de bien en el celular y ocupa ~10 veces menos espacio
+        async function resizeImage(file, maxSide, quality) {
+            let bmp;
+            try {
+                bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+            } catch (e) {
+                bmp = await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const u = URL.createObjectURL(file);
+                    img.onload = () => { URL.revokeObjectURL(u); resolve(img); };
+                    img.onerror = () => { URL.revokeObjectURL(u); reject(new Error('No pude leer esa imagen. Prueba con una foto JPG o PNG.')); };
+                    img.src = u;
+                });
+            }
+            const w = bmp.width, h = bmp.height;
+            const scale = Math.min(1, maxSide / Math.max(w, h));
+            const cw = Math.round(w * scale), ch = Math.round(h * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = cw; canvas.height = ch;
+            const c2 = canvas.getContext('2d');
+            c2.fillStyle = '#ffffff';
+            c2.fillRect(0, 0, cw, ch);
+            c2.drawImage(bmp, 0, 0, cw, ch);
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+            if (!blob) throw new Error('No pude procesar la imagen.');
+            return blob;
         }
 
-        function saveNewPhoto(e) {
+        async function saveNewPhoto(e) {
             e.preventDefault();
-            const fileInput = document.getElementById('photoFileInput');
-            const file = fileInput.files[0];
+            const btn = document.getElementById('uploadSubmit');
+            const errEl = document.getElementById('uploadError');
+            const file = document.getElementById('photoFileInput').files[0];
+            errEl.classList.add('hidden');
+            if (!file) { errEl.innerText = 'Elige una foto primero.'; errEl.classList.remove('hidden'); return; }
 
-            if (!file) {
-                alert("Por favor selecciona una imagen de tu dispositivo.");
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const base64Url = event.target.result;
-                const newPhoto = {
-                    id: Date.now(),
-                    title: document.getElementById('photoTitleInput').value,
-                    date: document.getElementById('photoDateInput').value,
-                    url: base64Url,
-                    desc: document.getElementById('photoDescInput').value
-                };
-
-                const photos = getStoredPhotos();
-                photos.unshift(newPhoto);
-                saveStoredPhotos(photos);
-                renderGallery();
+            btn.disabled = true; btn.innerText = 'Subiendo…';
+            let uploadedPath = null;
+            try {
+                if (!(await getAccessToken())) { closeAddPhotoModal(); openLoginModal(); throw new Error('Tu sesión venció. Entra de nuevo.'); }
+                const blob = await resizeImage(file, 1600, 0.85);
+                const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+                await sbFetch(`/storage/v1/object/${BUCKET}/${path}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'image/jpeg', 'cache-control': 'max-age=31536000' },
+                    body: blob
+                });
+                uploadedPath = path;
+                await sbFetch('/rest/v1/fotos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+                    body: JSON.stringify({
+                        titulo: document.getElementById('photoTitleInput').value.trim(),
+                        fecha: document.getElementById('photoDateInput').value.trim(),
+                        descripcion: document.getElementById('photoDescInput').value.trim(),
+                        path: path
+                    })
+                });
+                uploadedPath = null;
                 closeAddPhotoModal();
                 e.target.reset();
-            };
-            reader.readAsDataURL(file);
+                await loadPhotos();
+            } catch (err) {
+                if (uploadedPath) { try { await sbFetch(`/storage/v1/object/${BUCKET}/${uploadedPath}`, { method: 'DELETE' }); } catch (x) {} }
+                errEl.innerText = err.message || 'No pude subir la foto. Intenta de nuevo.';
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false; btn.innerText = 'Guardar foto';
+            }
+        }
+
+        function initGallery() {
+            loadSession();
+            updateAuthUI();
+            loadPhotos();
         }
 
         // --- 4. IDEAS DE SALIDAS (20 TARJETAS + RANDOMIZADOR) ---
@@ -1145,7 +1356,7 @@
             switchTab('carta');
             initIslandPos();
             renderReasons();
-            renderGallery();
+            initGallery();
             renderIdeas();
             initParticles();
             animateParticles();

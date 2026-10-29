@@ -14,8 +14,6 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-RLS-4169E1?logo=postgresql&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-cron-2088FF?logo=githubactions&logoColor=white)
 
-![Sección de tarjetas con buscador en tiempo real, filtros por categoría y contador de progreso](docs/img/razones.png)
-
 </div>
 
 > **In English:** A framework-free single-page app with a cloud photo gallery. Authentication talks directly to the Supabase Auth REST API (no SDK) with automatic JWT refresh; data lives in PostgreSQL protected by Row Level Security, and images are resized and re-compressed in the browser before upload. Deployed on GitHub Pages with a scheduled GitHub Actions workflow.
@@ -25,7 +23,6 @@
 ## Tabla de contenidos
 
 - [Resumen](#resumen)
-- [Capturas](#capturas)
 - [Funcionalidades](#funcionalidades)
 - [Arquitectura](#arquitectura)
 - [Aspectos técnicos destacados](#aspectos-técnicos-destacados)
@@ -50,14 +47,6 @@ Lo que el proyecto demuestra:
 - **Seguridad en la base de datos, no en el navegador:** políticas RLS en PostgreSQL y en Storage, versionadas en un script SQL idempotente.
 - **Procesamiento de imágenes en el cliente** para reducir el peso de cada subida.
 - **Interfaz *mobile-first* y accesible**, sin framework y sin paso de compilación.
-
----
-
-## Capturas
-
-| Buscador y filtros sobre 100 tarjetas | Carta con animación y contador en vivo |
-|:---:|:---:|
-| ![Buscador y filtros](docs/img/razones.png) | ![Carta interactiva](docs/img/carta.png) |
 
 ---
 
@@ -167,7 +156,6 @@ nuestra-historia/
 ├── config.js                       # URL y clave pública de Supabase (window.APP_CONFIG)
 ├── supabase_setup.sql              # Esquema, políticas RLS y bucket de Storage (idempotente)
 ├── cancion.mp3                     # Audio del reproductor
-├── docs/img/                       # Capturas del README
 ├── .nojekyll                       # Desactiva el procesamiento de Jekyll en GitHub Pages
 ├── LICENSE                         # Licencia MIT
 └── .github/workflows/

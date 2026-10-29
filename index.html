@@ -804,7 +804,7 @@
         }
 
         // --- 3. GALERÍA COMPARTIDA (Supabase vía API REST, sin librerías) ---
-        const CFG = window.CATALINA_CONFIG || {};
+        const CFG = window.APP_CONFIG || {};
         const SB_URL = (CFG.supabaseUrl || '').replace(/\/+$/, '');
         const SB_KEY = CFG.supabaseAnonKey || '';
         const CLOUD_ON = !!(SB_URL && SB_KEY);

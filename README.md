@@ -2,45 +2,62 @@
 
 # Nuestra Historia
 
-**Aplicación web interactiva con galería de fotos en la nube, autenticación y base de datos PostgreSQL. No usa frameworks: está hecha con JavaScript puro.**
+**SPA en JavaScript puro con galería de fotos en la nube, autenticación JWT implementada sin SDK y backend Supabase (PostgreSQL + Storage) protegido con Row Level Security.**
 
 [![Demo](https://img.shields.io/badge/Demo-en%20vivo-22c55e?style=for-the-badge&logo=githubpages&logoColor=white)](https://arrobaaas.github.io/nuestra-historia/)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES2020-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue?style=for-the-badge)](LICENSE)
 
-[**Ver demo en vivo →**](https://arrobaaas.github.io/nuestra-historia/)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES2020-F7DF1E?logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20·%20Storage-3FCF8E?logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-RLS-4169E1?logo=postgresql&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-cron-2088FF?logo=githubactions&logoColor=white)
+
+![Sección de tarjetas con buscador en tiempo real, filtros por categoría y contador de progreso](docs/img/razones.png)
 
 </div>
+
+> **In English:** A framework-free single-page app with a cloud photo gallery. Authentication talks directly to the Supabase Auth REST API (no SDK) with automatic JWT refresh; data lives in PostgreSQL protected by Row Level Security, and images are resized and re-compressed in the browser before upload. Deployed on GitHub Pages with a scheduled GitHub Actions workflow.
 
 ---
 
 ## Tabla de contenidos
 
-- [Descripción](#descripción)
+- [Resumen](#resumen)
+- [Capturas](#capturas)
 - [Funcionalidades](#funcionalidades)
 - [Arquitectura](#arquitectura)
 - [Aspectos técnicos destacados](#aspectos-técnicos-destacados)
+- [Decisiones técnicas](#decisiones-técnicas)
 - [Seguridad](#seguridad)
 - [Stack tecnológico](#stack-tecnológico)
 - [Estructura del proyecto](#estructura-del-proyecto)
-- [Instalación y ejecución local](#instalación-y-ejecución-local)
+- [Ejecutar en local](#ejecutar-en-local)
 - [Despliegue](#despliegue)
-- [Próximas mejoras](#próximas-mejoras)
+- [Limitaciones conocidas y próximas mejoras](#limitaciones-conocidas-y-próximas-mejoras)
 - [Autor](#autor)
 
 ---
 
-## Descripción
+## Resumen
 
-**Nuestra Historia** es una *single-page application* que reúne una carta interactiva, un catálogo de 100 mensajes con buscador y filtros, un generador de ideas de salidas y una **galería de fotos compartida en la nube**. Dos usuarios autenticados pueden subir y administrar las fotos, y cualquier visitante puede verlas.
+Aplicación de una sola página (SPA) con cuatro módulos: una carta interactiva, un catálogo de 100 tarjetas con buscador y filtros, un generador de ideas de salidas y una **galería de fotos compartida en la nube**. Los usuarios autenticados suben y administran fotos; cualquier visitante puede verlas.
 
-Empezó como un proyecto personal y lo construí con las mismas prácticas que un producto real: un backend gestionado con **Supabase** (PostgreSQL, Auth y Storage), **políticas de seguridad a nivel de fila (RLS)**, el manejo de sesiones con JWT y su renovación automática hechos desde cero, optimización de imágenes en el cliente y una interfaz *mobile-first* accesible.
+Lo que el proyecto demuestra:
 
-No usa ningún framework ni el SDK de Supabase: toda la comunicación con el backend son llamadas `fetch` directas a la API REST. Así el sitio es liviano y se ve cómo funciona cada pieza por dentro.
+- **Integración con un backend real sin librerías cliente:** toda la comunicación con Supabase son llamadas `fetch` a su API REST, incluida la autenticación y la renovación del token.
+- **Seguridad en la base de datos, no en el navegador:** políticas RLS en PostgreSQL y en Storage, versionadas en un script SQL idempotente.
+- **Procesamiento de imágenes en el cliente** para reducir el peso de cada subida.
+- **Interfaz *mobile-first* y accesible**, sin framework y sin paso de compilación.
+
+---
+
+## Capturas
+
+| Buscador y filtros sobre 100 tarjetas | Carta con animación y contador en vivo |
+|:---:|:---:|
+| ![Buscador y filtros](docs/img/razones.png) | ![Carta interactiva](docs/img/carta.png) |
 
 ---
 
@@ -48,13 +65,13 @@ No usa ningún framework ni el SDK de Supabase: toda la comunicación con el bac
 
 | Módulo | Descripción |
 |---|---|
-| **Carta interactiva** | Sobre animado en 3D (CSS `perspective` y `rotateX`) que se abre, se cierra y se sella con un sello de cera. |
-| **100 razones** | Catálogo de 100 tarjetas con búsqueda de texto en tiempo real, filtros por categoría, revelado progresivo y selección aleatoria. |
-| **Galería en la nube** | Subida, visualización, ampliación (*lightbox*) y borrado de fotos. Las fotos se ordenan por la fecha que se elige con un selector de calendario. |
+| **Galería en la nube** | Subida, visualización, ampliación (*lightbox*) y borrado de fotos. Cada foto se ordena por la fecha elegida en un selector de calendario. |
+| **Catálogo de tarjetas** | 100 tarjetas con búsqueda de texto en tiempo real, filtros por categoría, revelado progresivo, contador de avance y selección aleatoria. |
+| **Carta interactiva** | Sobre animado en 3D con CSS (`perspective`, `rotateX`) que se abre, se cierra y se sella. |
 | **Ideas de salidas** | Tarjetas por categoría, generador aleatorio y seguimiento de las ideas completadas. |
-| **Contador en vivo** | Tiempo transcurrido desde una fecha clave, que se actualiza cada segundo. |
-| **Reproductor de música** | Widget flotante que se puede arrastrar (Pointer Events) y que recuerda su posición entre visitas. |
-| **Efectos visuales** | Partículas animadas en `<canvas>` con `requestAnimationFrame` y confeti. |
+| **Contador en vivo** | Tiempo transcurrido desde una fecha, actualizado cada segundo. |
+| **Reproductor de audio** | Widget flotante arrastrable (Pointer Events) que recuerda su posición entre visitas. |
+| **Efectos visuales** | Partículas en `<canvas>` con `requestAnimationFrame`, desactivadas si el usuario pide menos movimiento. |
 
 ---
 
@@ -73,33 +90,46 @@ flowchart LR
 ```
 
 - **Frontend estático** servido por GitHub Pages, sin paso de compilación al desplegar.
-- **Backend como servicio (BaaS):** Supabase entrega la autenticación, la base de datos PostgreSQL expuesta mediante PostgREST y el almacenamiento de archivos.
-- **Automatización:** un workflow de GitHub Actions programado evita que el proyecto de Supabase, en el plan gratuito, se pause por inactividad.
+- **Backend como servicio (BaaS):** Supabase entrega la autenticación, PostgreSQL expuesto mediante PostgREST y el almacenamiento de archivos.
+- **Automatización:** un workflow programado de GitHub Actions evita que el proyecto de Supabase (plan gratuito) se pause por inactividad.
 
 ---
 
 ## Aspectos técnicos destacados
 
 ### Autenticación sin SDK
-Implementé el flujo de autenticación directamente contra los endpoints de Supabase Auth (`/auth/v1/token`):
-- Login con `grant_type=password` y la sesión guardada en `localStorage`.
+El flujo se implementa directamente contra los endpoints de Supabase Auth (`/auth/v1/token`):
+- Login con `grant_type=password`; la sesión se guarda en `localStorage`.
 - **Renovación automática del token:** antes de cada petición se revisa la expiración del JWT y, si quedan menos de 60 segundos, se pide uno nuevo con el `refresh_token`.
 - Un *wrapper* centralizado (`sbFetch`) agrega las cabeceras `apikey` y `Authorization` y maneja los errores de forma uniforme.
 
 ### Optimización de imágenes en el cliente
 Antes de subir una foto, el navegador la procesa:
-- La redimensiona a un máximo de **1600 px** con `<canvas>` y la recomprime como JPEG (calidad 0.85). Esto reduce el tamaño unas **10 veces** sin una pérdida visible de calidad.
-- Respeta la orientación EXIF con `createImageBitmap(..., { imageOrientation: 'from-image' })` y, si el navegador no lo soporta, usa `Image` como alternativa.
-- **Subida transaccional:** si la imagen se sube al Storage pero falla el registro en la base de datos, se borra el archivo para no dejar archivos huérfanos.
+- La redimensiona a un máximo de **1600 px** con `<canvas>` y la recomprime como JPEG (calidad 0.85), lo que reduce su tamaño **unas 10 veces** sin pérdida visible.
+- Respeta la orientación EXIF con `createImageBitmap(..., { imageOrientation: 'from-image' })`, con `Image` como alternativa en navegadores sin soporte.
+- **Subida con compensación:** si el archivo llega a Storage pero falla el registro en la base de datos, el archivo se borra para no dejar huérfanos.
 
 ### Ordenamiento por fecha con compatibilidad hacia atrás
-Las fotos nuevas guardan la fecha en formato ISO (`YYYY-MM-DD`). Las antiguas tenían la fecha en texto libre ("16 de agosto de 2026"), así que un *parser* las interpreta para ordenar toda la galería de forma consistente sin migrar los datos.
+Las fotos nuevas guardan la fecha en ISO (`YYYY-MM-DD`). Las antiguas tenían texto libre ("16 de agosto de 2026"), así que un *parser* las interpreta y la galería se ordena de forma consistente **sin migrar datos**.
 
 ### Rendimiento y experiencia de usuario
 - Imágenes con `loading="lazy"` y `decoding="async"`, y caché de un año en los archivos subidos.
-- Respeta `prefers-reduced-motion` y desactiva las animaciones cuando el usuario lo pide.
-- Diseño *mobile-first*: entradas de 16 px para evitar el zoom automático en iOS, soporte de `viewport-fit=cover` y zonas táctiles adecuadas.
-- La interacción de la galería usa delegación de eventos en lugar de un *listener* por tarjeta.
+- Respeta `prefers-reduced-motion`.
+- *Mobile-first*: entradas de 16 px para evitar el zoom automático en iOS, `viewport-fit=cover` y zonas táctiles adecuadas.
+- Delegación de eventos en la galería en lugar de un *listener* por tarjeta.
+
+---
+
+## Decisiones técnicas
+
+| Decisión | Motivo |
+|---|---|
+| **Sin framework ni SDK de Supabase** | El sitio pesa poco, no necesita compilación y deja a la vista cómo funcionan la autenticación y las llamadas REST. |
+| **Seguridad con RLS en PostgreSQL** | La clave pública de Supabase es visible en el navegador por diseño; lo que protege los datos son las políticas de la base, que no se pueden saltar desde el cliente. |
+| **Compresión en el cliente antes de subir** | Ahorra ancho de banda móvil y espacio en el plan gratuito de Storage. |
+| **Esquema versionado e idempotente** (`supabase_setup.sql`) | Permite reconstruir el backend completo desde el repositorio y volver a ejecutar el script sin efectos secundarios. |
+| **Degradación elegante sin credenciales** | Si `config.js` está vacío, el sitio funciona igual y solo desactiva la galería en la nube. |
+| **Cron en GitHub Actions** | Supabase pausa los proyectos gratuitos tras 7 días sin actividad; una consulta liviana dos veces por semana lo evita. |
 
 ---
 
@@ -107,13 +137,11 @@ Las fotos nuevas guardan la fecha en formato ISO (`YYYY-MM-DD`). Las antiguas te
 
 | Medida | Implementación |
 |---|---|
-| **Row Level Security** | Activado en la tabla `fotos`. La lectura es pública y solo los usuarios autenticados pueden insertar. |
-| **Borrado restringido al dueño** | Política `auth.uid() = subida_por`: cada usuario solo puede borrar lo que subió. Lo mismo aplica en Storage (`owner = auth.uid()`). |
+| **Row Level Security** | Activado en la tabla `fotos`: lectura pública, inserción solo para usuarios autenticados. |
+| **Borrado restringido al dueño** | Política `auth.uid() = subida_por`: cada usuario solo borra lo que subió. Lo mismo en Storage (`owner = auth.uid()`). |
 | **Validación en Storage** | Bucket limitado a 5 MB por archivo y a los tipos MIME `image/jpeg`, `image/png` e `image/webp`. |
-| **Gestión de claves** | En el frontend solo está la clave pública (*publishable/anon*). La clave `service_role` nunca sale del panel de Supabase. |
-| **Prevención de XSS** | Todo el contenido que escriben los usuarios se escapa con `escapeHtml` antes de insertarlo en el DOM. |
-
-Todo el esquema y las políticas están versionados en [`supabase_setup.sql`](supabase_setup.sql). El script es **idempotente** y se puede ejecutar varias veces sin efectos secundarios.
+| **Gestión de claves** | En el frontend solo está la clave pública (*publishable/anon*); la clave `service_role` nunca sale del panel de Supabase. |
+| **Prevención de XSS** | Todo el contenido escrito por usuarios pasa por `escapeHtml` antes de insertarse en el DOM. |
 
 ---
 
@@ -136,70 +164,74 @@ Todo el esquema y las políticas están versionados en [`supabase_setup.sql`](su
 nuestra-historia/
 ├── index.html                      # Aplicación completa (marcado, estilos y lógica)
 ├── tailwind.css                    # Hoja de estilos de Tailwind ya compilada
-├── config.js                       # URL y clave pública de Supabase
+├── config.js                       # URL y clave pública de Supabase (window.APP_CONFIG)
 ├── supabase_setup.sql              # Esquema, políticas RLS y bucket de Storage (idempotente)
 ├── cancion.mp3                     # Audio del reproductor
+├── docs/img/                       # Capturas del README
 ├── .nojekyll                       # Desactiva el procesamiento de Jekyll en GitHub Pages
-└── .github/
-    └── workflows/
-        └── mantener-activo.yml     # Cron que mantiene activa la base de datos
+├── LICENSE                         # Licencia MIT
+└── .github/workflows/
+    └── mantener-activo.yml         # Cron que mantiene activa la base de datos
 ```
 
 ---
 
-## Instalación y ejecución local
+## Ejecutar en local
 
-**Requisitos:** un navegador moderno y, si quieres usar la galería en la nube, una cuenta gratuita en [Supabase](https://supabase.com).
+**Requisitos:** un navegador moderno y, para la galería en la nube, una cuenta gratuita de [Supabase](https://supabase.com).
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/arrobaaas/nuestra-historia.git
 cd nuestra-historia
 
-# 2. Levantar un servidor local (cualquiera sirve)
+# Cualquier servidor estático sirve
 python3 -m http.server 8000
-# Abrir http://localhost:8000
+# -> http://localhost:8000
 ```
 
-**Configurar el backend (opcional):**
+**Configurar tu propio backend (opcional):**
 
 1. Crea un proyecto en Supabase.
-2. En **SQL Editor**, ejecuta el contenido de `supabase_setup.sql`.
+2. En **SQL Editor**, ejecuta el contenido de [`supabase_setup.sql`](supabase_setup.sql).
 3. En **Authentication → Users**, crea los usuarios que podrán subir fotos.
 4. Copia la *Project URL* y la clave *publishable/anon* en `config.js`:
 
 ```js
-window.CATALINA_CONFIG = {
+window.APP_CONFIG = {
   supabaseUrl: "https://<tu-proyecto>.supabase.co",
   supabaseAnonKey: "<tu-clave-publica>"
 };
 ```
 
-> Si `config.js` no tiene credenciales, el sitio funciona igual y solo desactiva la galería en la nube.
+> Sin credenciales en `config.js`, el sitio funciona igual y solo desactiva la galería en la nube.
 
 ---
 
 ## Despliegue
 
-El sitio se despliega automáticamente en **GitHub Pages** con cada *push* a la rama `main`.
+Cada *push* a `main` se publica automáticamente en **GitHub Pages**.
 
-El workflow [`mantener-activo.yml`](.github/workflows/mantener-activo.yml) se ejecuta los lunes y jueves y hace una consulta liviana a la API, porque Supabase pausa los proyectos gratuitos después de 7 días sin actividad. También se puede ejecutar a mano desde la pestaña **Actions**.
+El workflow [`mantener-activo.yml`](.github/workflows/mantener-activo.yml) se ejecuta los lunes y jueves y hace una consulta liviana a la API para que Supabase no pause el proyecto. También se puede lanzar a mano desde la pestaña **Actions**.
 
 ---
 
-## Próximas mejoras
+## Limitaciones conocidas y próximas mejoras
 
-- [ ] Editar el título, la fecha y la descripción de las fotos ya subidas.
-- [ ] Separar `index.html` en módulos ES (`/js`, `/css`) con un *bundler* liviano como Vite.
-- [ ] Convertirla en una PWA con soporte *offline* y opción de instalarla en el celular.
-- [ ] Agregar pruebas automatizadas (Playwright) a la integración continua.
+| Estado actual | Mejora prevista |
+|---|---|
+| Toda la lógica vive en `index.html`. | Separar en módulos ES (`/js`, `/css`) con un *bundler* liviano como Vite. |
+| No hay pruebas automatizadas. | Tests unitarios con Vitest y end-to-end con Playwright en la integración continua. |
+| Las fotos no se pueden editar una vez subidas. | Edición de título, fecha y descripción. |
+| Requiere conexión para la galería. | Convertir el sitio en PWA con soporte *offline* e instalación en el celular. |
 
 ---
 
 ## Autor
 
-**Nicolás**, desarrollador web
+**Nicolás Reyes Orellana** — Desarrollador web
 
 [![GitHub](https://img.shields.io/badge/GitHub-arrobaaas-181717?style=flat-square&logo=github)](https://github.com/arrobaaas)
 
-<sub>Proyecto personal hecho con dedicación para Catalina ♡</sub>
+Proyecto personal, diseñado y desarrollado de principio a fin por mí: interfaz, integración con Supabase, modelo de datos y políticas de seguridad.
+
+Distribuido bajo la [licencia MIT](LICENSE).
